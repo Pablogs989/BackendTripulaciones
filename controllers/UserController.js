@@ -15,19 +15,20 @@ const UserController = {
                     return res.status(400).send("Complete the password field");
                 }
                 const password = await bcrypt.hash(req.body.password, 10);
-                if (req.file) req.body.profilePic = req.file.filename;
-                await User.create({
+                const user = await User.create({
                     ...req.body,
                     password,
                     role: "user",
                 });
+                res.status(201).send({
+                    message:
+                        "Welcome, you are one step away from registering, check your email to confirm your registration",
+                    user,
+                });
             } else {
                 return res.status(400).send("User already exists");
             }
-            res.status(201).send({
-                message:
-                    "Welcome, you are one step away from registering, check your email to confirm your registration",
-            });
+ 
         } catch (error) {
             next(error);
         }
@@ -37,15 +38,6 @@ const UserController = {
             const user = await User.findOne({
                 email: req.body.email,
             })
-                .populate({
-                    path: "postsId",
-                    populate: {
-                        path: "userId",
-                    },
-                })
-                .populate("commentsId", "text")
-                .populate("followers")
-                .populate("following");
             if (!user) {
                 return res.status(400).send("Invalid email or password");
             }
@@ -55,11 +47,7 @@ const UserController = {
             ) {
                 return res.status(400).send("Invalid email or password");
             }
-            if (!user.confirmed) {
-                return res
-                    .status(400)
-                    .send({ message: "You should confirm your email" });
-            }
+
             const token = jwt.sign({ _id: user._id }, JWT_SECRET);
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
@@ -84,18 +72,6 @@ const UserController = {
             res.status(500).send({
                 message: "There was a problem logging out the user",
             });
-        }
-    },
-
-    async confirm(req, res) {
-        try {
-            const token = req.params.emailToken;
-            const payload = jwt.verify(token, JWT_SECRET);
-            const email = await User.findOne({ email: payload.email });
-            await User.findByIdAndUpdate(email._id, { confirmed: true });
-            res.status(201).send({ message: "User confirmed" });
-        } catch (error) {
-            console.error(error);
         }
     },
 
