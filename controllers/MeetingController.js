@@ -28,7 +28,7 @@ const MeetingController = {
   },
   async bookingMeeting(req, res) {
     try {
-      const meeting = await Post.findByIdAndUpdate(
+      const meeting = await Meeting.findByIdAndUpdate(
         req.params._id,
         { id_user: req.body.id_user, date: req.body.date, hour: req.body.hour },
         { new: true }
