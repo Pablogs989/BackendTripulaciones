@@ -26,7 +26,25 @@ const EventSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please fill in the password field"],
     },
-    
+    interests: {
+        type: [{
+            type: String,
+            enum: [
+                "Tecnología",
+                "Gestión de Proyectos",
+                "Agile",
+                "Softskills",
+                "Marketing Digital",
+                "Negocios",
+                "Emprendimiento",
+                "Educación",
+                "Formación",
+                "Salud y Bienestar",
+                "Creatividad",
+                "Diseño"
+            ]
+        }],
+    },
 }, { timestamps: true });
 
 const Event = mongoose.model('Event', EventSchema);

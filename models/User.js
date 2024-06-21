@@ -53,6 +53,39 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please fill in the linkedin field"],
     },
+    company: {
+        type: String,
+        required: [true, "Please fill in the company field"],
+    },
+    job_title: {
+        type: [{
+            type: String,
+            enum: [
+                "Desarrollador de Contenidos",
+                "Instructor / Formador",
+                "Coordinador de Cursos",
+                "Administrador de Plataforma",
+                "Especialista en Evaluación",
+                "Diseñador Instruccional",
+                "Director de Formación",
+                "Consultor de E-learning",
+                "Gestor de Proyectos",
+                "Desarrollador de E-learning",
+                "Investigador en E-learning",
+                "Especialista en Soporte Técnico",
+                "Gestor de Comunidad",
+                "Responsable de Calidad",
+                "Director de Tecnología",
+                "Analista de Datos Educativos",
+                "Especialista en Marketing de E-learning",
+                "Facilitador de Talleres",
+                "Asesor Pedagógico",
+                "Director de Innovación",
+            ]
+        }],
+        required: [true, "Please fill in the job title field"],
+
+    },
     allergies: {
         type: [{
             type: String,
