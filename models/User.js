@@ -57,6 +57,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please fill in the company field"],
     },
+    suplier: {
+        type: Boolean,
+        required: [true, "Please fill in the suplier field"],
+    },
     job_title: {
         type: [{
             type: String,
