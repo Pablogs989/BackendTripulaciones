@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please fill in the name field"],
     },
-    surename: {
+    surname: {
         type: String,
         required: [true, "Please fill in the name field"],
     },
@@ -21,11 +21,11 @@ const UserSchema = new mongoose.Schema({
     tokens: [],
     confirmed: { type: Boolean },
     phone_prefx: {
-        type: Number,
+        type: String,
         required: [true, "Please fill in the phone prefix field"],
     },
     phone_number: {
-        type: Number,
+        type: String,
         required: [true, "Please fill in the phone number field"],
     },
     address: {
