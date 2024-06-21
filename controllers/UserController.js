@@ -18,7 +18,6 @@ const UserController = {
                 const user = await User.create({
                     ...req.body,
                     password,
-                    role: "user",
                 });
                 res.status(201).send({
                     message:
