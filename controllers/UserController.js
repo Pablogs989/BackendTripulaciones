@@ -27,7 +27,7 @@ const UserController = {
             } else {
                 return res.status(400).send("User already exists");
             }
- 
+
         } catch (error) {
             next(error);
         }
@@ -81,7 +81,58 @@ const UserController = {
             });
         }
     },
-
+    async getUsers(req, res) {
+        try {
+            const users = await User.find()
+            res.send(users);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({
+                message: "There was a problem getting the users",
+            });
+        }
+    },
+    async getUserById(req, res) {
+        try {
+            const user = await User.findById(req.params.id)
+            if (!user) {
+                return res.status(404).send({
+                    message: "User not found",
+                });
+            }
+            res.send(user);
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).send({
+                message: "There was a problem getting the user",
+            });
+        }
+    },
+    async updateUser(req, res) {
+        try {
+            const user = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
+            res.send(user);
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).send({
+                message: "There was a problem updating the user",
+            });
+        }
+    },
+    async deleteUser(req, res) {
+        try {
+            await User.findByIdAndDelete(req.user._id);
+            res.send({ message: "User deleted" });
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).send({
+                message: "There was a problem deleting the user",
+            });
+        }
+    }
 };
 
 module.exports = UserController;
