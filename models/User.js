@@ -47,6 +47,7 @@ const UserSchema = new mongoose.Schema({
     user_type: {
         type: String,
         required: [true, "Please fill in the user type field"],
+        default: "assitant"
     },
     url_linkedin: {
         type: String,
