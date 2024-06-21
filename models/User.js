@@ -143,6 +143,14 @@ const UserSchema = new mongoose.Schema({
             ]
         }],
     },
+    eventsId: {
+        type: ObjectId,
+        ref: 'Event'
+    },
+    meetingsId: {
+        type: ObjectId,
+        ref: 'Event'
+    }
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
