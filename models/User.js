@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -58,8 +59,8 @@ const UserSchema = new mongoose.Schema({
         required: [true, "Please fill in the company field"],
     },
     suplier: {
-        type: Boolean,
-        required: [true, "Please fill in the suplier field"],
+        type: ObjectId,
+        ref: 'Suplier'
     },
     job_title: {
         type: [{
