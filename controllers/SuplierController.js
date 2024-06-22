@@ -136,6 +136,23 @@ const SuplierController = {
       });
     }
   },
+  async getCompanyByinterests(req, res) {
+    try {
+      const companyInterest = req.params.interest;
+      const company = await Suplier.find({ interests: companyInterest });
+      if (!company) {
+        return res.status(404).send({
+          message: "Company not found",
+        });
+      }
+      res.send(company);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "There was a problem getting the company",
+      });
+    }
+  },
 };
 
 module.exports = SuplierController;

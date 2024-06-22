@@ -9,6 +9,7 @@ router.get("/companies", SuplierController.getAllCompanies); //revisar por que n
 router.get("/company/:companyName", SuplierController.getCompanyByName);
 router.get("/company/id/:_id", SuplierController.getCompanyById);
 router.get("/company/category/:category",SuplierController.getCompanyByCategory)
+router.get("/company/interest/:interest",SuplierController.getCompanyByinterests)
 router.delete("/logout", authentication, SuplierController.logout); // no me deja desloguearme por el token
 
 module.exports = router;
