@@ -87,13 +87,13 @@ const SuplierController = {
     try {
       const companyName = req.params.companyName;
       const company = await Suplier.findOne({ company_name: companyName });
-  
+
       if (!company) {
         return res.status(404).send({
           message: "Company not found",
         });
       }
-  
+
       res.send(company);
     } catch (error) {
       console.error(error);
@@ -101,8 +101,24 @@ const SuplierController = {
         message: "There was a problem getting the company",
       });
     }
-  }
-  
+  },
+  async getCompanyById(req, res) {
+    try {
+      const companyId = req.params._id;
+      const company = await Suplier.findById(companyId);
+      if (!company) {
+        return res.status(404).send({
+          message: "Company not found",
+        });
+      }
+      res.send(company);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "There was a problem getting the company",
+      });
+    }
+  },
 };
 
 module.exports = SuplierController;
