@@ -42,6 +42,38 @@ const MeetingController = {
       res.status(500).send(error);
     }
   },
+  async delete(req, res) {
+    try {
+      let meeting= await Meeting.findById(req.params._id)
+      console.log('meeting user id : ', meeting.id_user_suplier)
+      console.log('req.params._id : ', req.user._id )
+      console.log('meeting.id_user_suplier.equals(req.user._id: ', )
+      if(req.user._id.equals(meeting.id_user_suplier)){
+        meeting = await Meeting.findByIdAndDelete(req.params._id);
+        res.send({ msg: "Meeting deleted", meeting });
+      }else {
+        res.status(500).send({ msg: "Only the user which creted the meeting can delete it" });  
+      }
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({ msg: "There was a problem trying to remove the Meeting" });
+    }
+  },
+  async getAll(req, res) {
+    try {
+        const { page = 1, limit = 20 } = req.query;
+        const meeting = await Meeting.find()
+            .limit(limit)
+            .skip((page - 1) * limit);
+        res.status(200).send(meeting);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            msg: "There was an issue finding the meetings",
+        });
+    }
+},
 };
 
 module.exports = MeetingController;
