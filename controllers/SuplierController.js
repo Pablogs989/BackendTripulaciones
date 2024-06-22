@@ -119,6 +119,23 @@ const SuplierController = {
       });
     }
   },
+  async getCompanyByCategory(req, res) {
+    try {
+      const companyCategory = req.params.category;
+      const company = await Suplier.find({ type_collab: companyCategory });
+      if (!company) {
+        return res.status(404).send({
+          message: "Company not found",
+        });
+      }
+      res.send(company);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send({
+        message: "There was a problem getting the company",
+      });
+    }
+  },
 };
 
 module.exports = SuplierController;
