@@ -1,0 +1,20 @@
+meta {
+  name: NewMeeting
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/meetings/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id_collab":"testId",
+    "id_user_collab":"testId",
+    "date":"2020-01-10",
+    "hour":"15:00"
+  }
+}

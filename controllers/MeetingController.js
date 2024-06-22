@@ -3,25 +3,16 @@ require("dotenv").config();
 
 const MeetingController = {
   async createMeeting(req, res, next) {
-    const { id_collab, id_user_collab, id_user, date, table, hour } = req.body;
+    const { id_collab, id_user_collab, id_user, date, hour } = req.body;
 
-    if (!id_collab || !id_user_collab || !date || !table || !hour) {
+    if (!id_collab || !id_user_collab || !date || !hour) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     try {
-      const newMeeting = new Meeting({
-        id_collab,
-        id_user_collab,
-        id_user,
-        date,
-        table,
-        hour,
-      });
-
-      await newMeeting.save();
-
-      res.status(201).json(newMeeting);
+      //TODO : picking up user and company from Authentitification
+      const newMeeting = await Meeting.create({...req.body})
+      res.status(201).send({msg:"new meeting added",newMeeting});
     } catch (error) {
       next(error);
     }
