@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const MeetingController = require('../controllers/MeetingController');
+const { authentication } = require('../middleware/authentication.js')
 
 
-router.post('/', MeetingController.createMeeting);
-router.put("/id/:_id",MeetingController.bookingMeeting)
+router.post('/',authentication, MeetingController.createMeeting);
+router.put("/bookingmeeting/:_id",authentication,MeetingController.bookingMeeting)
+router.put("/cancel/:_id",authentication,MeetingController.cancel)
 
 module.exports = router;
