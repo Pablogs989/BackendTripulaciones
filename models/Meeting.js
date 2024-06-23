@@ -3,22 +3,23 @@ const mongoose = require("mongoose");
 
 const MeetingSchema = new mongoose.Schema(
   {
-    id_collab: {
-      type: { type: ObjectId, ref: "supliers" },
+    id_suplier: {
+      type: ObjectId,
+      ref: 'Suplier',
+      required: [true, "Meeting can only be creted by colaborator/supplier, please add colaborator company"]
     },
-    id_user_collab: {
-      type: { type: ObjectId, ref: "users" },
+    id_user_suplier: {
+      type: ObjectId,
+      ref: 'Suplier',
+      required: [true, "Meeting can only be creted by colaborator/supplier user, pleasea dd teh colaborator user"]
     },
     id_user: {
-      type: { type: ObjectId, ref: "users" },
+      type: ObjectId,
+      ref: 'Suplier'
     },
     date: {
       type: Date,
       required: [true, "Please fill in the date field"],
-    },
-    table: {
-      type: Number,
-      required: [true, "there is no table number"],
     },
     hour: {
       type: String,
@@ -31,6 +32,10 @@ const MeetingSchema = new mongoose.Schema(
           `${props.value} is not a valid hour format! Use HH:MM format.`,
       },
     },
+    cancel:{ 
+      type: Boolean,
+      default: false
+    }
   },
   { timestamps: true }
 );
