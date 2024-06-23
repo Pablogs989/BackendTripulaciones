@@ -5,8 +5,33 @@ require("dotenv").config();
 const EventController = {
     async create(req, res, next) {
         try {
-            const event = await Event.create({
-                ...req.body,
+            const { speaker, desc_event, id_place, date, hour, interests, speakerEmail } = req.body;
+            const newUser = await User.findOne({
+                email: req.body.email,
+            });
+            if (!newUser) {
+                if (!speakerEmail) {
+                    return res.status(400).send("Complete the speaker email field");
+                }
+                const password = await bcrypt.hash(speakerEmail, 10);
+                const user = await User.create({
+                    ...req.body,
+                    password,
+                });
+                res.status(201).send({
+                    message:
+                        "Welcome, you are one step away from registering, check your email to confirm your registration",
+                    user,
+                });
+            } else {
+                return res.status(400).send("User already exists");
+            }            const event = await Event.create({
+                speaker,
+                desc_event,
+                id_place,
+                date,
+                hour,
+                interests,
             });
             res.status(201).send({
                 message:

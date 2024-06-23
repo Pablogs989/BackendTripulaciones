@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const EventSchema = new mongoose.Schema({
-    speaker_name: {
-        type: String,
-        required: [true, "Please fill in the name field"],
+    speaker: {
+        type: ObjectId,
+        ref: 'User',    
+        required: [true, "Please fill in the speaker field"],
     },
     desc_event: {
         type: String,
