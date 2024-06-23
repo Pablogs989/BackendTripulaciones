@@ -10,12 +10,12 @@ const MeetingSchema = new mongoose.Schema(
     },
     id_user_supplier: {
       type: ObjectId,
-      ref: 'Supplier',
+      ref: 'User',
       required: [true, "Meeting can only be creted by colaborator/supplier user, pleasea dd teh colaborator user"]
     },
     id_user: {
       type: ObjectId,
-      ref: 'Supplier'
+      ref: 'User'
     },
     date: {
       type: Date,
