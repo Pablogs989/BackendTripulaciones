@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const SuplierSchema = new mongoose.Schema({
+const SupplierSchema = new mongoose.Schema({
     cif: {
         type: String,
         required: [true, "Please fill in the CIF field"],
@@ -65,6 +65,6 @@ const SuplierSchema = new mongoose.Schema({
     tokens: [],    
 }, { timestamps: true });
 
-const Suplier = mongoose.model('Suplier', SuplierSchema);
+const Supplier = mongoose.model('Supplier', SupplierSchema);
 
-module.exports = Suplier;
+module.exports = Supplier;

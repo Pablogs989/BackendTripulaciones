@@ -58,9 +58,9 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please fill in the company field"],
     },
-    suplier: {
+    supplier: {
         type: ObjectId,
-        ref: 'Suplier'
+        ref: 'Supplier'
     },
     job_title: {
         type: [{
