@@ -7,8 +7,8 @@ const MeetingController = {
       //TODO : picking up user and company from Authentitification
       const newMeeting = await Meeting.create({
           ...req.body,
-          id_user_suplier:req.user._id,
-          id_suplier:req.user.suplier
+          id_user_supplier:req.user._id,
+          id_supplier:req.user.supplier
 
         })
       res.status(201).send({msg:"new meeting added",newMeeting});
@@ -45,10 +45,10 @@ const MeetingController = {
   async delete(req, res) {
     try {
       let meeting= await Meeting.findById(req.params._id)
-      console.log('meeting user id : ', meeting.id_user_suplier)
+      console.log('meeting user id : ', meeting.id_user_supplier)
       console.log('req.params._id : ', req.user._id )
-      console.log('meeting.id_user_suplier.equals(req.user._id: ', )
-      if(req.user._id.equals(meeting.id_user_suplier)){
+      console.log('meeting.id_user_supplier.equals(req.user._id: ', )
+      if(req.user._id.equals(meeting.id_user_supplier)){
         meeting = await Meeting.findByIdAndDelete(req.params._id);
         res.send({ msg: "Meeting deleted", meeting });
       }else {
