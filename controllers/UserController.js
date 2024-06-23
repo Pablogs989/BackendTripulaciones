@@ -60,6 +60,14 @@ const UserController = {
             next(error);
         }
     },
+    async getUserById(req, res) {
+        try {
+            const user = await User.findById(req.params._id)
+            res.send({message: 'Your user', user})
+        } catch (error) {
+            next(error);
+        }
+    },
     async logout(req, res) {
         try {
             await User.findByIdAndUpdate(req.user._id, {

@@ -1,0 +1,31 @@
+meta {
+  name: Create User
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/users/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name":"paquito3",
+    "surname":"chocolatero",
+    "email":"p.chocolatero3@gmail.com",
+    "password":"tomate",
+    "phone_prefx":"+34",
+    "phone_number":"666666666",
+    "address":"calle de las cosas bonitas",
+    "zip_code":"46117",
+    "city":"Valencia",
+    "country":"Spain",
+    "url_linkedin":"www.lalalal.com",
+    "job_title":"Asesor Pedagógico",
+    "company":"tururú",
+    "suplier":"6674198a3f9e95a8621b3a54"
+    
+  }
+}

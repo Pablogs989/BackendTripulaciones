@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +17,12 @@
     "env": "^0.0.2",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.7.0"
+    "mongodb": "^6.7.0",
+    "moongose": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "mongodb": "^6.7.0",
+    "mongoose": "^8.4.3"
   }
 }
