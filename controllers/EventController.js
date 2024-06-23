@@ -1,32 +1,25 @@
 const Event = require("../models/Event.js");
 const User = require("../models/User.js");
 require("dotenv").config();
+const bcrypt = require("bcrypt");
 
 const EventController = {
     async create(req, res, next) {
         try {
-            const { speaker, desc_event, id_place, date, hour, interests, speakerEmail } = req.body;
-            const newUser = await User.findOne({
-                email: req.body.email,
+            const { desc_event, id_place, date, hour, interests, speakerEmail } = req.body;
+
+            if (!speakerEmail) {
+                return res.status(400).send("Complete the speaker email field");
+            }
+            const password = await bcrypt.hash(speakerEmail, 10);
+            const user = await User.create({
+                user_type: "speaker",
+                password,
+                email: speakerEmail,
+                completed: false,
             });
-            if (!newUser) {
-                if (!speakerEmail) {
-                    return res.status(400).send("Complete the speaker email field");
-                }
-                const password = await bcrypt.hash(speakerEmail, 10);
-                const user = await User.create({
-                    ...req.body,
-                    password,
-                });
-                res.status(201).send({
-                    message:
-                        "Welcome, you are one step away from registering, check your email to confirm your registration",
-                    user,
-                });
-            } else {
-                return res.status(400).send("User already exists");
-            }            const event = await Event.create({
-                speaker,
+            const event = await Event.create({
+                speaker: user,
                 desc_event,
                 id_place,
                 date,
@@ -35,8 +28,9 @@ const EventController = {
             });
             res.status(201).send({
                 message:
-                    "Event created successfully",
+                    "Event created successfully and speaker created successfully",
                 event,
+                user
             });
 
         } catch (error) {

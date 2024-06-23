@@ -4,11 +4,9 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "Please fill in the name field"],
     },
     surname: {
         type: String,
-        required: [true, "Please fill in the name field"],
     },
     email: {
         type: String,
@@ -23,27 +21,21 @@ const UserSchema = new mongoose.Schema({
     confirmed: { type: Boolean },
     phone_prefx: {
         type: String,
-        required: [true, "Please fill in the phone prefix field"],
     },
     phone_number: {
         type: String,
-        required: [true, "Please fill in the phone number field"],
     },
     address: {
         type: String,
-        required: [true, "Please fill in the address field"],
     },
     zip_code: {
         type: Number,
-        required: [true, "Please fill in the zip code field"],
     },
     city: {
         type: String,
-        required: [true, "Please fill in the city field"],
     },
     country: {
         type: String,
-        required: [true, "Please fill in the country field"],
     },
     user_type: {
         type: String,
@@ -52,11 +44,9 @@ const UserSchema = new mongoose.Schema({
     },
     url_linkedin: {
         type: String,
-        required: [true, "Please fill in the linkedin field"],
     },
     company: {
         type: String,
-        required: [true, "Please fill in the company field"],
     },
     supplier: {
         type: ObjectId,
@@ -88,8 +78,6 @@ const UserSchema = new mongoose.Schema({
                 "Director de Innovación",
             ]
         }],
-        required: [true, "Please fill in the job title field"],
-
     },
     allergies: {
         type: [{
@@ -150,7 +138,11 @@ const UserSchema = new mongoose.Schema({
     meetingsId: {
         type: ObjectId,
         ref: 'Event'
-    }
+    },
+    completed: {
+        type: Boolean,
+        default: true,
+    },
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
