@@ -1,4 +1,5 @@
 const Event = require("../models/Event.js");
+const User = require("../models/User.js");
 require("dotenv").config();
 
 const EventController = {
@@ -84,11 +85,13 @@ const EventController = {
         const userId = req.user.id;
         try {
             const event = await Event.findById(id);
+            const user = await User.findById(userId);
             if (!event) {
                 return res.status(404).send({ message: 'Event not found' });
             }
             if (!event.id_users.includes(userId)) {
                 event.id_users.push(userId);
+                user.events.push(event._id);
                 await event.save();
             } else {
                 return res.status(400).send({ message: 'User already registered' });
