@@ -1,0 +1,22 @@
+meta {
+  name: NewMeeting
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/meetings/
+  body: json
+  auth: none
+}
+
+headers {
+  authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Njc2ZDVlYjQ3YjM2OGY0NzZkYzA5YmEiLCJpYXQiOjE3MTkwNjQxMTV9.0_7mecvpjjtY1EmY2QURbSnXDKpCjXbzWfS9u277ofI
+}
+
+body:json {
+  {
+    "date":"2020-01-10",
+    "hour":"15:00"
+  }
+}
