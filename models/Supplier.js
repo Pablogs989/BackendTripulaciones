@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
 const SupplierSchema = new mongoose.Schema({
@@ -57,12 +58,13 @@ const SupplierSchema = new mongoose.Schema({
                 "Diseño"
             ]
         }],
-    },
+    }, 
     employes: {
         type: Number,
         required: [true, "Please fill in the employes field"],
     },
-    tokens: [],    
+    tokens: [],
+    ids_user_supplier:[{ type: ObjectId, ref: 'User' }]
 }, { timestamps: true });
 
 const Supplier = mongoose.model('Supplier', SupplierSchema);

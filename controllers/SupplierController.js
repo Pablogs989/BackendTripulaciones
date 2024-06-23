@@ -1,4 +1,6 @@
 const Supplier = require("../models/Supplier.js");
+const User = require("../models/User.js");
+const mongoose = require('mongoose');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -6,26 +8,54 @@ const { JWT_SECRET } = process.env;
 
 const SupplierController = {
   async register(req, res, next) {
+    //crear ususarios dummy
     try {
+      const ids_user_supplier = await req.body.emails.map(async (email, i) => {
+        const newUser = await User.create({
+          email,
+          password: req.body.company_name + i,
+          name: req.body.company_name + i,
+          surname: req.body.company_name + i,
+          phone_prefx: `+34`,
+          phone_number: `64245127`,
+          address: `calle falsa 1234`,
+          zip_code: `46021`,
+          city: `Valencia`,
+          country: `Espana`,
+          user_type: `supplier`,
+          url_linkedin: `www.linkedin/yourlinkdinName.com`,
+          company: req.body.company_name,
+          job_title: "Desarrollador de Contenidos",
+        });
+         return newUser._id;
+        
+      });
+
       const newSupplier = await Supplier.findOne({
         cif: req.body.cif,
       });
+
       if (!newSupplier) {
         if (!req.body.password) {
           return res.status(400).send("Complete the password field");
         }
         const password = await bcrypt.hash(req.body.password, 10);
-        const supplier = await Supplier.create({
+        let supplier = await Supplier.create({
           ...req.body,
           password,
         });
+        console.log(ids_user_supplier);
+        supplier = await Supplier.findByIdAndUpdate(supplier._id, {
+          ids_user_supplier,
+        });
+
         res.status(201).send({
           message:
             "Welcome, you are one step away from registering, check your email to confirm your registration",
           supplier,
         });
       } else {
-        return res.status(400).send("User already exists");
+        return res.status(400).send("Supplier already exists");
       }
     } catch (error) {
       next(error);
