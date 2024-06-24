@@ -18,11 +18,12 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.7.0",
-    "moongose": "^1.0.0"
+    "moongose": "^1.0.0",
+    "nodemailer": "^6.9.14"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4",
     "mongodb": "^6.7.0",
-    "mongoose": "^8.4.3"
+    "mongoose": "^8.4.3",
+    "nodemon": "^3.1.4"
   }
 }

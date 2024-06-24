@@ -18,7 +18,10 @@ const UserSchema = new mongoose.Schema({
         required: [true, "Please fill in the password field"],
     },
     tokens: [],
-    confirmed: { type: Boolean },
+    confirmed: { 
+        type: Boolean,
+        default: false,
+    },
     phone_prefx: {
         type: String,
     },

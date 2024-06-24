@@ -2,6 +2,9 @@ const Event = require("../models/Event.js");
 const User = require("../models/User.js");
 require("dotenv").config();
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET, EMAILURL } = process.env;
+const transporter = require("../config/nodemailer");
 
 const EventController = {
     async create(req, res, next) {
@@ -18,6 +21,16 @@ const EventController = {
                 email: speakerEmail,
                 completed: false,
             });
+            const emailToken = jwt.sign({ email: speakerEmail }, JWT_SECRET, {
+                expiresIn: "48h",
+            });
+            const url = EMAILURL + "/users/confirm/" + emailToken;
+            await transporter.sendMail({
+                to: speakerEmail,
+                subject: "Has sido invitado como ponente!",
+                html: `<h3>Bienvenido, confirma tu cuenta y completa tus datos para acceder a la web</h3>
+                <a href="${url}"> Click your email to confirm your registration</a>`,
+            })
             const event = await Event.create({
                 speaker: user,
                 desc_event,

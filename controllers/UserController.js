@@ -2,7 +2,8 @@ const User = require("../models/User.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, EMAILURL } = process.env;
+const transporter = require("../config/nodemailer");
 
 const UserController = {
     async register(req, res, next) {
@@ -19,6 +20,16 @@ const UserController = {
                     ...req.body,
                     password,
                 });
+                const emailToken = jwt.sign({ email: req.body.email }, JWT_SECRET, {
+                    expiresIn: "48h",
+                });
+                const url = EMAILURL + "/users/confirm/" + emailToken;
+                await transporter.sendMail({
+                    to: req.body.email,
+                    subject: "Confirm your email",
+                    html: `<h3>Welcome, you are one step away from registering </h3>
+            <a href="${url}"> Click your email to confirm your registration</a>`,
+                })
                 res.status(201).send({
                     message:
                         "Welcome, you are one step away from registering, check your email to confirm your registration",
@@ -30,6 +41,17 @@ const UserController = {
 
         } catch (error) {
             next(error);
+        }
+    },
+    async confirm(req, res) {
+        try {
+            const token = req.params.emailToken;
+            const payload = jwt.verify(token, JWT_SECRET);
+            const email = await User.findOne({ email: payload.email });
+            await User.findByIdAndUpdate(email._id, { confirmed: true });
+            res.status(201).send({ message: "User confirmed" });
+        } catch (error) {
+            console.error(error);
         }
     },
     async login(req, res, next) {
@@ -46,7 +68,11 @@ const UserController = {
             ) {
                 return res.status(400).send("Invalid email or password");
             }
-
+            if (!user.confirmed) {
+                return res
+                    .status(400)
+                    .send({ message: "You should confirm your email" });
+            }
             const token = jwt.sign({ _id: user._id }, JWT_SECRET);
             if (user.tokens.length > 4) user.tokens.shift();
             user.tokens.push(token);
@@ -63,7 +89,7 @@ const UserController = {
     async getUserById(req, res) {
         try {
             const user = await User.findById(req.params._id)
-            res.send({message: 'Your user', user})
+            res.send({ message: 'Your user', user })
         } catch (error) {
             next(error);
         }
