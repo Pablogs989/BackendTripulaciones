@@ -13,7 +13,7 @@ const SupplierController = {
       const ids_user_supplier = await req.body.emails.map(async (email, i) => {
         const newUser = await User.create({
           email,
-          password: req.body.company_name + i,
+          password: await bcrypt.hash(req.body.company_name + i, 10),
           name: req.body.company_name + i,
           surname: req.body.company_name + i,
           phone_prefx: `+34`,
@@ -27,8 +27,8 @@ const SupplierController = {
           company: req.body.company_name,
           job_title: "Desarrollador de Contenidos",
         });
-         return newUser._id;
-        
+        return newUser._id;
+
       });
 
       const newSupplier = await Supplier.findOne({
@@ -45,10 +45,13 @@ const SupplierController = {
           password,
         });
         console.log(ids_user_supplier);
-        supplier = await Supplier.findByIdAndUpdate(supplier._id, {
-          ids_user_supplier,
-        });
-
+        await ids_user_supplier.map((id_user_supplierPromise) => {
+          id_user_supplierPromise.then((id_user_supplier) => {
+            console.log('id_user_supplier : ', id_user_supplier)
+            supplier.ids_user_supplier.push(id_user_supplier)
+          })
+        })
+        await supplier.save()
         res.status(201).send({
           message:
             "Welcome, you are one step away from registering, check your email to confirm your registration",
