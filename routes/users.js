@@ -7,8 +7,8 @@ router.post('/', UserController.register)
 router.post('/login', UserController.login)
 router.delete('/logout', authentication, UserController.logout)
 router.get('/', UserController.getUsers)
-router.get('/id/:id', authentication, UserController.getUserById)
-router.put('/', authentication, UserController.updateUser)
+router.get('/id/:id', UserController.getUserById)
+router.put('/id/:id', authentication, UserController.updateUser)
 router.delete('/', authentication, UserController.deleteUser)
 
 module.exports = router

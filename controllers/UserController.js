@@ -63,7 +63,7 @@ const UserController = {
     async getUserById(req, res) {
         try {
             const user = await User.findById(req.params._id)
-            res.send({message: 'Your user', user})
+            res.send({ message: 'Your user', user })
         } catch (error) {
             next(error);
         }
@@ -111,7 +111,12 @@ const UserController = {
     },
     async updateUser(req, res) {
         try {
-            const user = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
+            const updateData = { ...req.body };
+            if (req.body.password) {
+                updateData.password = await bcrypt.hash(req.body.password, 10);
+            }
+
+            const user = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
             res.send(user);
         }
         catch (error) {
