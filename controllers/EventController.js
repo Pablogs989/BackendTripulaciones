@@ -47,37 +47,37 @@ const EventController = {
                 expiresIn: "48h",
             });
             const url = `${EMAILURL}/users/confirm/${emailToken}`;
-            await transporter.sendMail({
-                to: speakerEmail,
-                subject: "¡Has sido invitado como ponente!",
-                html: `
-                    <div style="font-family: Arial, sans-serif; color: #333;">
-                        <h2 style="color: #007BFF;">¡Bienvenido a Nuestro Evento!</h2>
-                        <p>Hola,</p>
-                        <p>Nos complace informarte que has sido invitado a participar como ponente en nuestro próximo evento. Estamos emocionados de contar con tu experiencia y conocimientos.</p>
-                        <p>Para completar tu registro y obtener acceso a la plataforma, por favor confirma tu cuenta haciendo clic en el enlace a continuación:</p>
-                        <div style="text-align: center; margin: 20px 0;">
-                            <a href="${url}" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007BFF; border-radius: 5px; text-decoration: none;">Confirmar mi cuenta</a>
-                        </div>
-                        <p>Si el botón anterior no funciona, copia y pega el siguiente enlace en tu navegador:</p>
-                        <p><a href="${url}">${url}</a></p>
-                        <p>Una vez que hayas confirmado tu cuenta, podrás completar tu perfil y obtener más información sobre el evento.</p>
-                        <h3 style="color: #007BFF;">Detalles del Evento</h3>
-                        <ul>
-                            <li><strong>Descripción del evento:</strong> ${desc_event}</li>
-                            <li><strong>Fecha:</strong> ${date}</li>
-                            <li><strong>Hora:</strong> ${hour}</li>
-                            <li><strong>Lugar:</strong> ${place.place_name}</li>
-                        </ul>
-                        <p>Si tienes alguna pregunta o necesitas asistencia adicional, no dudes en contactarnos.</p>
-                        <p>Gracias y esperamos verte pronto.</p>
-                        <p>Saludos,</p>
-                        <p>El equipo del evento</p>
-                        <hr style="border: 0; border-top: 1px solid #ccc;">
-                        <p style="font-size: 12px; color: #777;">Este es un correo electrónico automático, por favor no responda a este mensaje.</p>
-                    </div>
-                `,
-            });
+            // await transporter.sendMail({
+            //     to: speakerEmail,
+            //     subject: "¡Has sido invitado como ponente!",
+            //     html: `
+            //         <div style="font-family: Arial, sans-serif; color: #333;">
+            //             <h2 style="color: #007BFF;">¡Bienvenido a Nuestro Evento!</h2>
+            //             <p>Hola,</p>
+            //             <p>Nos complace informarte que has sido invitado a participar como ponente en nuestro próximo evento. Estamos emocionados de contar con tu experiencia y conocimientos.</p>
+            //             <p>Para completar tu registro y obtener acceso a la plataforma, por favor confirma tu cuenta haciendo clic en el enlace a continuación:</p>
+            //             <div style="text-align: center; margin: 20px 0;">
+            //                 <a href="${url}" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007BFF; border-radius: 5px; text-decoration: none;">Confirmar mi cuenta</a>
+            //             </div>
+            //             <p>Si el botón anterior no funciona, copia y pega el siguiente enlace en tu navegador:</p>
+            //             <p><a href="${url}">${url}</a></p>
+            //             <p>Una vez que hayas confirmado tu cuenta, podrás completar tu perfil y obtener más información sobre el evento.</p>
+            //             <h3 style="color: #007BFF;">Detalles del Evento</h3>
+            //             <ul>
+            //                 <li><strong>Descripción del evento:</strong> ${desc_event}</li>
+            //                 <li><strong>Fecha:</strong> ${date}</li>
+            //                 <li><strong>Hora:</strong> ${hour}</li>
+            //                 <li><strong>Lugar:</strong> ${place.place_name}</li>
+            //             </ul>
+            //             <p>Si tienes alguna pregunta o necesitas asistencia adicional, no dudes en contactarnos.</p>
+            //             <p>Gracias y esperamos verte pronto.</p>
+            //             <p>Saludos,</p>
+            //             <p>El equipo del evento</p>
+            //             <hr style="border: 0; border-top: 1px solid #ccc;">
+            //             <p style="font-size: 12px; color: #777;">Este es un correo electrónico automático, por favor no responda a este mensaje.</p>
+            //         </div>
+            //     `,
+            // });
             res.status(201).send({
                 message: "Event created successfully",
                 event,
