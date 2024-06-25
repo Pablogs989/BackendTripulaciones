@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
         required: [true, "Please fill in the password field"],
     },
     tokens: [],
-    confirmed: { 
+    confirmed: {
         type: Boolean,
         default: false,
     },
@@ -51,7 +51,7 @@ const UserSchema = new mongoose.Schema({
     company: {
         type: String,
     },
-    supplier: {
+    id_supplier: {
         type: ObjectId,
         ref: 'Supplier'
     },
@@ -138,10 +138,6 @@ const UserSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'Event'
     },
-    meetingsId: {
-        type: ObjectId,
-        ref: 'Event'
-    },
     completed: {
         type: Boolean,
         default: true,
@@ -152,6 +148,10 @@ const UserSchema = new mongoose.Schema({
             ref: 'Event'
         }]
     },
+    ids_meetings: [{
+        type: ObjectId,
+        ref: 'Meeting'
+    }]
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
