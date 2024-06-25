@@ -14,38 +14,45 @@ const EventController = {
             if (!speakerEmail) {
                 return res.status(400).send("Complete the speaker email field");
             }
-            const password = await bcrypt.hash(speakerEmail, 10);
-            const user = await User.create({
-                user_type: "speaker",
-                password,
+            const newUser = await User.findOne({
                 email: speakerEmail,
-                completed: false,
-            });
-            const emailToken = jwt.sign({ email: speakerEmail }, JWT_SECRET, {
-                expiresIn: "48h",
-            });
-            const url = EMAILURL + "/users/confirm/" + emailToken;
-            await transporter.sendMail({
-                to: speakerEmail,
-                subject: "Has sido invitado como ponente!",
-                html: `<h3>Bienvenido, confirma tu cuenta y completa tus datos para acceder a la web</h3>
-                <a href="${url}"> Click your email to confirm your registration</a>`,
-            })
-            const event = await Event.create({
-                speaker: user,
-                desc_event,
-                id_place,
-                date,
-                hour,
-                interests,
-            });
-            res.status(201).send({
-                message:
-                    "Event created successfully and speaker created successfully",
-                event,
-                user
             });
 
+            if (!newUser) {
+                const password = await bcrypt.hash(speakerEmail, 10);
+                const user = await User.create({
+                    user_type: "speaker",
+                    password,
+                    email: speakerEmail,
+                    completed: false,
+                });
+                const emailToken = jwt.sign({ email: speakerEmail }, JWT_SECRET, {
+                    expiresIn: "48h",
+                });
+                const url = EMAILURL + "/users/confirm/" + emailToken;
+                await transporter.sendMail({
+                    to: speakerEmail,
+                    subject: "Has sido invitado como ponente!",
+                    html: `<h3>Bienvenido, confirma tu cuenta y completa tus datos para acceder a la web</h3>
+                    <a href="${url}"> Click your email to confirm your registration</a>`,
+                })
+                const event = await Event.create({
+                    speaker: user,
+                    desc_event,
+                    id_place,
+                    date,
+                    hour,
+                    interests,
+                });
+                res.status(201).send({
+                    message:
+                        "Event created successfully and speaker created successfully",
+                    event,
+                    user
+                });
+            } else {
+                return res.status(400).send("User already exists");
+            }
         } catch (error) {
             next(error);
         }
