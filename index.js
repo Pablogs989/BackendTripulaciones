@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/users", require("./routes/users"));
-app.use("/supliers", require("./routes/supliers"));
+app.use("/suppliers", require("./routes/suppliers"));
 app.use("/meetings", require("./routes/meetings"));
 app.use("/events", require("./routes/events"));
 app.use('/places', require('./routes/places'))

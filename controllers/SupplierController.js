@@ -1,31 +1,69 @@
-const Suplier = require("../models/Suplier.js");
+const Supplier = require("../models/Supplier.js");
+const User = require("../models/User.js");
+const mongoose = require('mongoose');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { JWT_SECRET } = process.env;
 
-const SuplierController = {
+const SupplierController = {
   async register(req, res, next) {
+    //crear ususarios dummy
+    const user_ids=[]
     try {
-      const newSuplier = await Suplier.findOne({
+      const newSupplier = await Supplier.findOne({
         cif: req.body.cif,
       });
-      if (!newSuplier) {
+
+      if (!newSupplier) {
         if (!req.body.password) {
           return res.status(400).send("Complete the password field");
         }
         const password = await bcrypt.hash(req.body.password, 10);
-        const suplier = await Suplier.create({
+        let supplier = await Supplier.create({
           ...req.body,
           password,
         });
+        const ids_user_supplier = await Promise.all(req.body.emails.map(async (email, i) => {
+          const newUser = await User.create({
+            email,
+            password: await bcrypt.hash(req.body.company_name + i, 10),
+            name: req.body.company_name + i,
+            surname: req.body.company_name + i,
+            phone_prefx: `+34`,
+            phone_number: `64245127`,
+            address: `calle falsa 1234`,
+            zip_code: `46021`,
+            city: `Valencia`,
+            country: `Espana`,
+            user_type: `supplier`,
+            url_linkedin: `www.linkedin/yourlinkdinName.com`,
+            company: req.body.company_name,
+            job_title: "Desarrollador de Contenidos",
+            id_supplier:supplier._id
+          });
+          return newUser._id;
+        }));
+
+          ids_user_supplier.map(async (id_user_supplier) => {
+              supplier.ids_user_supplier.push(id_user_supplier)
+          })
+        console.log(ids_user_supplier)
+        // await Promise.all(ids_user_supplier.map(async (id_user_supplierPromise) => {
+        //   const id_user_supplier = await id_user_supplierPromise;
+        //   console.log('id_user_supplier : ', id_user_supplier);
+        //   supplier.ids_user_supplier.push(id_user_supplier);
+        //   await supplier.save();  // Wait for the save to complete
+        //   console.log(supplier);
+        // }));
+        await supplier.save()
         res.status(201).send({
           message:
             "Welcome, you are one step away from registering, check your email to confirm your registration",
-          suplier,
+          supplier,
         });
       } else {
-        return res.status(400).send("User already exists");
+        return res.status(400).send("Supplier already exists");
       }
     } catch (error) {
       next(error);
@@ -33,27 +71,27 @@ const SuplierController = {
   },
   async login(req, res, next) {
     try {
-      const suplier = await Suplier.findOne({
+      const supplier = await Supplier.findOne({
         cif: req.body.cif,
       });
-      if (!suplier) {
+      if (!supplier) {
         return res.status(400).send("Invalid CIF or password");
       }
       if (
         !req.body.password ||
-        !bcrypt.compareSync(req.body.password, suplier.password)
+        !bcrypt.compareSync(req.body.password, supplier.password)
       ) {
         return res.status(400).send("Invalid CIF or password");
       }
 
-      const token = jwt.sign({ _id: suplier._id }, JWT_SECRET);
-      if (suplier.tokens.length > 4) suplier.tokens.shift();
-      suplier.tokens.push(token);
-      await suplier.save();
+      const token = jwt.sign({ _id: supplier._id }, JWT_SECRET);
+      if (supplier.tokens.length > 4) supplier.tokens.shift();
+      supplier.tokens.push(token);
+      await supplier.save();
       res.status(200).send({
-        message: "Welcome " + suplier.name,
+        message: "Welcome " + supplier.name,
         token,
-        suplier,
+        supplier,
       });
     } catch (error) {
       next(error);
@@ -61,20 +99,20 @@ const SuplierController = {
   },
   async logout(req, res) {
     try {
-      await Suplier.findByIdAndUpdate(req.suplier._id, {
+      await Supplier.findByIdAndUpdate(req.supplier._id, {
         $pull: { tokens: req.headers.authorization },
       });
       res.send({ message: "Logged out" });
     } catch (error) {
       console.error(error);
       res.status(500).send({
-        message: "There was a problem logging out the suplier",
+        message: "There was a problem logging out the supplier",
       });
     }
   },
   async getAllCompanies(req, res) {
     try {
-      const companies = await Suplier.find();
+      const companies = await Supplier.find();
       res.send(companies);
     } catch (error) {
       console.error(error);
@@ -86,7 +124,7 @@ const SuplierController = {
   async getCompanyByName(req, res) {
     try {
       const companyName = req.params.companyName;
-      const company = await Suplier.findOne({ company_name: companyName });
+      const company = await Supplier.findOne({ company_name: companyName });
 
       if (!company) {
         return res.status(404).send({
@@ -105,7 +143,7 @@ const SuplierController = {
   async getCompanyById(req, res) {
     try {
       const companyId = req.params._id;
-      const company = await Suplier.findById(companyId);
+      const company = await Supplier.findById(companyId);
       if (!company) {
         return res.status(404).send({
           message: "Company not found",
@@ -122,7 +160,7 @@ const SuplierController = {
   async getCompanyByCategory(req, res) {
     try {
       const companyCategory = req.params.category;
-      const company = await Suplier.find({ type_collab: companyCategory });
+      const company = await Supplier.find({ type_collab: companyCategory });
       if (!company) {
         return res.status(404).send({
           message: "Company not found",
@@ -139,7 +177,7 @@ const SuplierController = {
   async getCompanyByinterests(req, res) {
     try {
       const companyInterest = req.params.interest;
-      const company = await Suplier.find({ interests: companyInterest });
+      const company = await Supplier.find({ interests: companyInterest });
       if (!company) {
         return res.status(404).send({
           message: "Company not found",
@@ -155,4 +193,4 @@ const SuplierController = {
   },
 };
 
-module.exports = SuplierController;
+module.exports = SupplierController;

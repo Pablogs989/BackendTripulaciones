@@ -1,6 +1,7 @@
+const { ObjectId } = require('mongodb');
 const mongoose = require('mongoose');
 
-const SuplierSchema = new mongoose.Schema({
+const SupplierSchema = new mongoose.Schema({
     cif: {
         type: String,
         required: [true, "Please fill in the CIF field"],
@@ -57,14 +58,16 @@ const SuplierSchema = new mongoose.Schema({
                 "Diseño"
             ]
         }],
-    },
+    }, 
     employes: {
         type: Number,
         required: [true, "Please fill in the employes field"],
     },
-    tokens: [],    
+    tokens: [],
+    ids_user_supplier:[{ type: ObjectId, ref: 'User' }],
+    ids_meetings:[{ type: ObjectId, ref: 'Meeting' }]
 }, { timestamps: true });
 
-const Suplier = mongoose.model('Suplier', SuplierSchema);
+const Supplier = mongoose.model('Supplier', SupplierSchema);
 
-module.exports = Suplier;
+module.exports = Supplier;
