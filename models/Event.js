@@ -12,7 +12,8 @@ const EventSchema = new mongoose.Schema({
         required: [true, "Please fill in the description field"],
     },
     id_place: {
-        type: String,
+        type: ObjectId,
+        ref: 'Place',
         required: [true, "Please fill in the password field"],
     },
     date: {

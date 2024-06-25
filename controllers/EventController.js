@@ -1,5 +1,6 @@
 const Event = require("../models/Event.js");
 const User = require("../models/User.js");
+const Place = require("../models/Place.js");
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -14,45 +15,52 @@ const EventController = {
             if (!speakerEmail) {
                 return res.status(400).send("Complete the speaker email field");
             }
-            const newUser = await User.findOne({
-                email: speakerEmail,
-            });
 
-            if (!newUser) {
+            let user = await User.findOne({ email: speakerEmail });
+
+            if (!user) {
                 const password = await bcrypt.hash(speakerEmail, 10);
-                const user = await User.create({
+                user = await User.create({
                     user_type: "speaker",
                     password,
                     email: speakerEmail,
                     completed: false,
                 });
+
                 const emailToken = jwt.sign({ email: speakerEmail }, JWT_SECRET, {
                     expiresIn: "48h",
                 });
-                const url = EMAILURL + "/users/confirm/" + emailToken;
+                const url = `${EMAILURL}/users/confirm/${emailToken}`;
                 await transporter.sendMail({
                     to: speakerEmail,
                     subject: "Has sido invitado como ponente!",
                     html: `<h3>Bienvenido, confirma tu cuenta y completa tus datos para acceder a la web</h3>
                     <a href="${url}"> Click your email to confirm your registration</a>`,
-                })
-                const event = await Event.create({
-                    speaker: user,
-                    desc_event,
-                    id_place,
-                    date,
-                    hour,
-                    interests,
                 });
-                res.status(201).send({
-                    message:
-                        "Event created successfully and speaker created successfully",
-                    event,
-                    user
-                });
-            } else {
-                return res.status(400).send("User already exists");
             }
+
+            const place = await Place.findById(id_place);
+            if (!place) {
+                return res.status(404).send("Place not found");
+            }
+
+            const event = await Event.create({
+                speaker: user._id,
+                desc_event,
+                id_place: place._id,
+                date,
+                hour,
+                interests,
+            });
+
+            User.findByIdAndUpdate(user._id, { $push: { speaker_events: event._id } }).exec();
+
+            res.status(201).send({
+                message: "Event created successfully",
+                event,
+                user
+            });
+
         } catch (error) {
             next(error);
         }

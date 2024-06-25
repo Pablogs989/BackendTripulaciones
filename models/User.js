@@ -146,6 +146,12 @@ const UserSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
+    speaker_events: {
+        type: [{
+            type: ObjectId,
+            ref: 'Event'
+        }]
+    },
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
