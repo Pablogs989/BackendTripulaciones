@@ -27,7 +27,8 @@ const MeetingController = {
         { id_user: req.user._id },
         { new: true }
       );
-      res.send({ msg: req.user.name + " your meeting was booked suxcesfully", meeting })
+      const newUser = await User.findByIdAndUpdate(req.user._id, { $push: { ids_meetings_atendee: meeting._id } });
+      res.send({ msg: req.user.name + " your meeting was booked suxcesfully", meeting ,newUser})
       //add meeting ID to user
     } catch (error) {
       console.error(error);
