@@ -64,7 +64,8 @@ const SupplierSchema = new mongoose.Schema({
         required: [true, "Please fill in the employes field"],
     },
     tokens: [],
-    ids_user_supplier:[{ type: ObjectId, ref: 'User' }]
+    ids_user_supplier:[{ type: ObjectId, ref: 'User' }],
+    ids_meetings:[{ type: ObjectId, ref: 'Meeting' }]
 }, { timestamps: true });
 
 const Supplier = mongoose.model('Supplier', SupplierSchema);

@@ -1,20 +1,26 @@
 const Meeting = require("../models/Meeting.js");
+const Supplier = require("../models/Supplier.js");
+const User = require("../models/User.js");
 const mongoose = require('mongoose');
 require("dotenv").config();
 
 const MeetingController = {
   async createMeeting(req, res, next) {
     try {
-      //TODO : picking up user and company from Authentitification
       const newMeeting = await Meeting.create({
         ...req.body,
         id_user_supplier: req.user._id,
-        id_supplier: req.user.supplier
+        id_supplier: req.user.id_supplier
 
       })
-      res.status(201).send({ msg: "new meeting added", newMeeting });
+      //add meetign ID to user
+      //add meeting ID to supplier
+      await User.findByIdAndUpdate(req.user._id, { $push: { ids_meetings: newMeeting._id } });
+      await Supplier.findByIdAndUpdate(req.user.supplier,{$push:{ids_meetings:newMeeting._id}})
+      res.status(201).send({ msg: "new meeting added", newMeeting })
     } catch (error) {
-      next(error);
+      //next(error);
+      res.status(500).send({ msg: "Meeting error ", error })
     }
   },
   async bookingMeeting(req, res) {
@@ -25,6 +31,7 @@ const MeetingController = {
         { new: true }
       );
       res.send({ msg: req.user.name + " your meeting was booked suxcesfully", meeting })
+      //add meeting ID to user
     } catch (error) {
       console.error(error);
       res.status(500).send(error);
@@ -84,18 +91,17 @@ const MeetingController = {
     }
 
   },
-  // async getBySupplierId(req,res){
-  //   console.log(ObjectId(req.params.supplierId))
-  //   try{
-  //     const meetings = await Meeting.find({id_supplier:ObjectId(req.params.supplierId)})
-  //     res.status(200).send({msg:"meetings found : ",meetings});
-  //   }catch(error){
-  //     console.error(error);
-  //     res.status(500).send({
-  //       msg: "There was an issue finding the meetings",
-  //     });
-  //   }
-  // }
+  //  async getBySupplierId(req,res){
+  //    try{
+  //      const meetings = await Meeting.find({id_supplier:ObjectId(req.params.supplierId)})
+  //      res.status(200).send({msg:"meetings found : ",meetings});
+  //    }catch(error){
+  //      console.error(error);
+  //      res.status(500).send({
+  //        msg: "There was an issue finding the meetings",
+  //      });
+  //    }
+  //  }
 };
 
 module.exports = MeetingController;

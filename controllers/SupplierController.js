@@ -9,28 +9,8 @@ const { JWT_SECRET } = process.env;
 const SupplierController = {
   async register(req, res, next) {
     //crear ususarios dummy
+    const user_ids=[]
     try {
-      const ids_user_supplier = await req.body.emails.map(async (email, i) => {
-        const newUser = await User.create({
-          email,
-          password: await bcrypt.hash(req.body.company_name + i, 10),
-          name: req.body.company_name + i,
-          surname: req.body.company_name + i,
-          phone_prefx: `+34`,
-          phone_number: `64245127`,
-          address: `calle falsa 1234`,
-          zip_code: `46021`,
-          city: `Valencia`,
-          country: `Espana`,
-          user_type: `supplier`,
-          url_linkedin: `www.linkedin/yourlinkdinName.com`,
-          company: req.body.company_name,
-          job_title: "Desarrollador de Contenidos",
-        });
-        return newUser._id;
-
-      });
-
       const newSupplier = await Supplier.findOne({
         cif: req.body.cif,
       });
@@ -44,13 +24,38 @@ const SupplierController = {
           ...req.body,
           password,
         });
-        console.log(ids_user_supplier);
-        await ids_user_supplier.map((id_user_supplierPromise) => {
-          id_user_supplierPromise.then((id_user_supplier) => {
-            console.log('id_user_supplier : ', id_user_supplier)
-            supplier.ids_user_supplier.push(id_user_supplier)
+        const ids_user_supplier = await Promise.all(req.body.emails.map(async (email, i) => {
+          const newUser = await User.create({
+            email,
+            password: await bcrypt.hash(req.body.company_name + i, 10),
+            name: req.body.company_name + i,
+            surname: req.body.company_name + i,
+            phone_prefx: `+34`,
+            phone_number: `64245127`,
+            address: `calle falsa 1234`,
+            zip_code: `46021`,
+            city: `Valencia`,
+            country: `Espana`,
+            user_type: `supplier`,
+            url_linkedin: `www.linkedin/yourlinkdinName.com`,
+            company: req.body.company_name,
+            job_title: "Desarrollador de Contenidos",
+            id_supplier:supplier._id
+          });
+          return newUser._id;
+        }));
+
+          ids_user_supplier.map(async (id_user_supplier) => {
+              supplier.ids_user_supplier.push(id_user_supplier)
           })
-        })
+        console.log(ids_user_supplier)
+        // await Promise.all(ids_user_supplier.map(async (id_user_supplierPromise) => {
+        //   const id_user_supplier = await id_user_supplierPromise;
+        //   console.log('id_user_supplier : ', id_user_supplier);
+        //   supplier.ids_user_supplier.push(id_user_supplier);
+        //   await supplier.save();  // Wait for the save to complete
+        //   console.log(supplier);
+        // }));
         await supplier.save()
         res.status(201).send({
           message:

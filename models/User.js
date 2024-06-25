@@ -58,7 +58,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please fill in the company field"],
     },
-    supplier: {
+    id_supplier: {
         type: ObjectId,
         ref: 'Supplier'
     },
@@ -147,10 +147,7 @@ const UserSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'Event'
     },
-    meetingsId: {
-        type: ObjectId,
-        ref: 'Event'
-    }
+    ids_meetings:[{ type: ObjectId, ref: 'Meeting' }]
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
