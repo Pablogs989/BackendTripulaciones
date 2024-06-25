@@ -30,17 +30,10 @@ const SupplierController = {
             password: await bcrypt.hash(req.body.company_name + i, 10),
             name: req.body.company_name + i,
             surname: req.body.company_name + i,
-            phone_prefx: `+34`,
-            phone_number: `64245127`,
-            address: `calle falsa 1234`,
-            zip_code: `46021`,
-            city: `Valencia`,
-            country: `Espana`,
             user_type: `supplier`,
-            url_linkedin: `www.linkedin/yourlinkdinName.com`,
             company: req.body.company_name,
-            job_title: "Desarrollador de Contenidos",
-            id_supplier:supplier._id
+            id_supplier:supplier._id,
+            completed:false, 
           });
           return newUser._id;
         }));
