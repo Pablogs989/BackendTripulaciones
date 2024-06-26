@@ -65,7 +65,8 @@ const SupplierSchema = new mongoose.Schema({
     },
     tokens: [],
     ids_user_supplier:[{ type: ObjectId, ref: 'User' }],
-    ids_meetings:[{ type: ObjectId, ref: 'Meeting' }]
+    ids_meetings:[{ type: ObjectId, ref: 'Meeting' }],
+    avatar_url:{type:String}, 
 }, { timestamps: true });
 
 const Supplier = mongoose.model('Supplier', SupplierSchema);

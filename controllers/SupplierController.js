@@ -4,12 +4,13 @@ const mongoose = require('mongoose');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const { uploadImageToImgur } = require('../config/imgurUploader.js');
+const path = require('path');
 const { JWT_SECRET } = process.env;
 
 const SupplierController = {
   async register(req, res, next) {
-    //crear ususarios dummy
-    const user_ids=[]
+    const user_ids = []
     try {
       const newSupplier = await Supplier.findOne({
         cif: req.body.cif,
@@ -18,6 +19,16 @@ const SupplierController = {
       if (!newSupplier) {
         if (!req.body.password) {
           return res.status(400).send("Complete the password field");
+        }
+        if (!req.file) {
+          req.body.avatar_url = false;
+        } else {
+          req.body.avatar_url = req.file.filename;
+          const staticDir = path.join(req.file.destination);
+          const imagePath = path.join(staticDir, req.file.filename);
+          const mainDirPath = path.join(__dirname, '..');
+          req.body.avatar_url = await uploadImageToImgur(mainDirPath + "/" + imagePath) || req.file.filename
+
         }
         const password = await bcrypt.hash(req.body.password, 10);
         let supplier = await Supplier.create({
@@ -32,23 +43,15 @@ const SupplierController = {
             surname: req.body.company_name + i,
             user_type: `supplier`,
             company: req.body.company_name,
-            id_supplier:supplier._id,
-            completed:false, 
+            id_supplier: supplier._id,
+            completed: false,
           });
           return newUser._id;
         }));
 
-          ids_user_supplier.map(async (id_user_supplier) => {
-              supplier.ids_user_supplier.push(id_user_supplier)
-          })
-        console.log(ids_user_supplier)
-        // await Promise.all(ids_user_supplier.map(async (id_user_supplierPromise) => {
-        //   const id_user_supplier = await id_user_supplierPromise;
-        //   console.log('id_user_supplier : ', id_user_supplier);
-        //   supplier.ids_user_supplier.push(id_user_supplier);
-        //   await supplier.save();  // Wait for the save to complete
-        //   console.log(supplier);
-        // }));
+        ids_user_supplier.map(async (id_user_supplier) => {
+          supplier.ids_user_supplier.push(id_user_supplier)
+        })
         await supplier.save()
         res.status(201).send({
           message:
