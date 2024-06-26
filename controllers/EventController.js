@@ -9,9 +9,10 @@ const transporter = require("../config/nodemailer");
 
 const EventController = {
     async create(req, res, next) {
+        //Ponente pertenece a una empresa
+        //La cuenta del ponente ya esta creada
         try {
-            const { desc_event, id_place, date, hour, interests, speakerEmail } = req.body;
-
+            const { desc_event, id_place, date, hour, interests, speakerEmail, id_supplier, company } = req.body;
             if (!speakerEmail) {
                 return res.status(400).send("Complete the speaker email field");
             }
@@ -25,22 +26,37 @@ const EventController = {
                     password,
                     email: speakerEmail,
                     completed: false,
+                    company: company,
+                    id_supplier: id_supplier,
                 });                
             }
+
+            user.company = company;
+            user.id_supplier = id_supplier;
+            await user.save();
 
             const place = await Place.findById(id_place);
             if (!place) {
                 return res.status(404).send("Place not found");
             }
-
-            const event = await Event.create({
+            
+            const eventData = {
                 speaker: user._id,
                 desc_event,
                 id_place: place._id,
                 date,
                 hour,
                 interests,
-            });
+            };
+
+            if (company !== null && company !== undefined) {
+                eventData.company = company;
+            }
+
+            if (user.id_supplier !== null && user.id_supplier !== undefined) {
+                eventData.id_supplier = id_supplier;
+            }
+            const event = await Event.create(eventData);
 
             User.findByIdAndUpdate(user._id, { $push: { speaker_events: event._id } }).exec();
             const emailToken = jwt.sign({ email: speakerEmail }, JWT_SECRET, {
