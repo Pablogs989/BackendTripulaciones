@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const { JWT_SECRET, EMAILURL } = process.env;
 const transporter = require("../config/nodemailer");
+const { uploadImageToImgur } = require('../config/imgurUploader.js');
+const path = require('path');
 
 const UserController = {
     async register(req, res, next) {
@@ -13,7 +15,17 @@ const UserController = {
             });
             if (!newUser) {
                 if (!req.body.password) {
-                    return res.status(400).send("Complete the password field");
+                    return res.status(400).send({msg:"Complete the password field"});
+                }
+                if (!req.file) {
+                    req.body.avatar_url = false;
+                } else {
+                    req.body.avatar_url = req.file.filename;
+                    const staticDir = path.join(req.file.destination);
+                    const imagePath = path.join(staticDir, req.file.filename);
+                    const mainDirPath = path.join(__dirname, '..');
+                    req.body.avatar_url = await uploadImageToImgur(mainDirPath +"/"+imagePath) || req.file.filename
+                    
                 }
                 const password = await bcrypt.hash(req.body.password, 10);
                 const user = await User.create({
@@ -163,6 +175,13 @@ const UserController = {
     },
     async updateUser(req, res) {
         try {
+            if (req.file) {
+                req.body.avatar_url = req.file.filename;
+                const staticDir = path.join(req.file.destination);
+                const imagePath = path.join(staticDir, req.file.filename);
+                const mainDirPath = path.join(__dirname, '..');
+                req.body.avatar_url = await uploadImageToImgur(mainDirPath +"/"+imagePath) || req.file.filename
+            }
             const user = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
             res.send(user);
         }

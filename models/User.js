@@ -155,7 +155,8 @@ const UserSchema = new mongoose.Schema({
     ids_meetings_atendee: [{
         type: ObjectId,
         ref: 'Meeting'
-    }]
+    }],
+    avatar_url:{type:String}
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);
