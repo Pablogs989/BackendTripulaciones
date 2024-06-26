@@ -1,6 +1,6 @@
 const Supplier = require("../models/Supplier.js");
 const User = require("../models/User.js");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -12,8 +12,8 @@ const SupplierController = {
     try {
       const ids_user_supplier = await req.body.emails.map(async (email, i) => {
         const newUser = await User.create({
-          email,
-          password: req.body.company_name + i,
+        email,
+        password: req.body.company_name + i,
           name: req.body.company_name + i,
           surname: req.body.company_name + i,
           phone_prefx: `+34`,
@@ -27,8 +27,7 @@ const SupplierController = {
           company: req.body.company_name,
           job_title: "Desarrollador de Contenidos",
         });
-         return newUser._id;
-        
+        return newUser._id;
       });
 
       const newSupplier = await Supplier.findOne({
