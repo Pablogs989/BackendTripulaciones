@@ -13,13 +13,10 @@ const MeetingController = {
         id_supplier: req.user.id_supplier
 
       })
-      //add meetign ID to user
-      //add meeting ID to supplier
       await User.findByIdAndUpdate(req.user._id, { $push: { ids_meetings: newMeeting._id } });
-      await Supplier.findByIdAndUpdate(req.user.supplier,{$push:{ids_meetings:newMeeting._id}})
+      await Supplier.findByIdAndUpdate(req.user.id_supplier,{$push:{ids_meetings:newMeeting._id}})
       res.status(201).send({ msg: "new meeting added", newMeeting })
     } catch (error) {
-      //next(error);
       res.status(500).send({ msg: "Meeting error ", error })
     }
   },
@@ -30,7 +27,8 @@ const MeetingController = {
         { id_user: req.user._id },
         { new: true }
       );
-      res.send({ msg: req.user.name + " your meeting was booked suxcesfully", meeting })
+      const newUser = await User.findByIdAndUpdate(req.user._id, { $push: { ids_meetings_atendee: meeting._id } });
+      res.send({ msg: req.user.name + " your meeting was booked suxcesfully", meeting ,newUser})
       //add meeting ID to user
     } catch (error) {
       console.error(error);

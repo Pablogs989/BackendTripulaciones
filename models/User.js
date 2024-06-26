@@ -151,6 +151,10 @@ const UserSchema = new mongoose.Schema({
     ids_meetings: [{
         type: ObjectId,
         ref: 'Meeting'
+    }],
+    ids_meetings_atendee: [{
+        type: ObjectId,
+        ref: 'Meeting'
     }]
 }, { timestamps: true });
 
