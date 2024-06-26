@@ -51,6 +51,13 @@ const EventSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    company: {
+        type: String,
+    },
+    id_supplier: {
+        type: ObjectId,
+        ref: 'Supplier',
+    },
 }, { timestamps: true });
 
 const Event = mongoose.model('Event', EventSchema);
