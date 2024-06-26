@@ -1,6 +1,6 @@
 const Supplier = require("../models/Supplier.js");
 const User = require("../models/User.js");
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -9,27 +9,8 @@ const { JWT_SECRET } = process.env;
 const SupplierController = {
   async register(req, res, next) {
     //crear ususarios dummy
+    const user_ids=[]
     try {
-      const ids_user_supplier = await req.body.emails.map(async (email, i) => {
-        const newUser = await User.create({
-        email,
-        password: req.body.company_name + i,
-          name: req.body.company_name + i,
-          surname: req.body.company_name + i,
-          phone_prefx: `+34`,
-          phone_number: `64245127`,
-          address: `calle falsa 1234`,
-          zip_code: `46021`,
-          city: `Valencia`,
-          country: `Espana`,
-          user_type: `supplier`,
-          url_linkedin: `www.linkedin/yourlinkdinName.com`,
-          company: req.body.company_name,
-          job_title: "Desarrollador de Contenidos",
-        });
-        return newUser._id;
-      });
-
       const newSupplier = await Supplier.findOne({
         cif: req.body.cif,
       });
