@@ -16,6 +16,12 @@ const PlaceSchema = new mongoose.Schema({
     }]
 }, { timestamps: true });
 
+PlaceSchema.methods.toJSON = function () {
+    const user = this._doc;
+    delete user.__v;
+    return user;
+};
+
 const Place = mongoose.model('Place', PlaceSchema);
 
 module.exports = Place;

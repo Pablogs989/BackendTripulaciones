@@ -97,6 +97,10 @@ const UserController = {
             const user = await User.findOne({
                 email: req.body.email,
             })
+            .populate('ids_meetings')
+            .populate('ids_meetings_atendee')
+            .populate('speaker_events')
+            .populate('id_supplier')
             if (!user) {
                 return res.status(400).send("Invalid email or password");
             }
@@ -127,6 +131,10 @@ const UserController = {
     async getUserById(req, res) {
         try {
             const user = await User.findById(req.params._id)
+            .populate('ids_meetings')
+            .populate('ids_meetings_atendee')
+            .populate('speaker_events')
+            .populate('id_supplier')
             res.send({ message: 'Your user', user })
         } catch (error) {
             next(error);
