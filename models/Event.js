@@ -58,6 +58,9 @@ const EventSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'Supplier',
     },
+    confirmed:{type:Boolean},
+    score_array:{type:[Number]},
+    score_avg:{type:Number}
 }, { timestamps: true });
 
 EventSchema.methods.toJSON = function () {
