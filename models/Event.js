@@ -60,6 +60,12 @@ const EventSchema = new mongoose.Schema({
     },
 }, { timestamps: true });
 
+EventSchema.methods.toJSON = function () {
+    const user = this._doc;
+    delete user.__v;
+    return user;
+};
+
 const Event = mongoose.model('Event', EventSchema);
 
 module.exports = Event;

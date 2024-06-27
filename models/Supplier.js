@@ -69,6 +69,14 @@ const SupplierSchema = new mongoose.Schema({
     avatar_url:{type:String}, 
 }, { timestamps: true });
 
+SupplierSchema.methods.toJSON = function () {
+    const user = this._doc;
+	delete user.tokens;
+	delete user.password;
+	delete user.__v;
+	return user;
+    };
+
 const Supplier = mongoose.model('Supplier', SupplierSchema);
 
 module.exports = Supplier;

@@ -39,7 +39,11 @@ const MeetingSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+MeetingSchema.methods.toJSON = function () {
+  const user = this._doc;
+  delete user.__v;
+return user;
+  };
 const Meeting = mongoose.model("Meeting", MeetingSchema);
 
 module.exports = Meeting;
