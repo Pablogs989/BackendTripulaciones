@@ -2,16 +2,18 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const EventSchema = new mongoose.Schema({
-    speaker_name: {
-        type: String,
-        required: [true, "Please fill in the name field"],
+    speaker: {
+        type: ObjectId,
+        ref: 'User',    
+        required: [true, "Please fill in the speaker field"],
     },
     desc_event: {
         type: String,
         required: [true, "Please fill in the description field"],
     },
     id_place: {
-        type: String,
+        type: ObjectId,
+        ref: 'Place',
         required: [true, "Please fill in the password field"],
     },
     date: {
@@ -48,6 +50,13 @@ const EventSchema = new mongoose.Schema({
     cancelled: {
         type: Boolean,
         default: false,
+    },
+    company: {
+        type: String,
+    },
+    id_supplier: {
+        type: ObjectId,
+        ref: 'Supplier',
     },
 }, { timestamps: true });
 

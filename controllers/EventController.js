@@ -1,17 +1,103 @@
 const Event = require("../models/Event.js");
 const User = require("../models/User.js");
+const Place = require("../models/Place.js");
 require("dotenv").config();
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET, EMAILURL } = process.env;
+const transporter = require("../config/nodemailer");
 
 const EventController = {
     async create(req, res, next) {
+        //Ponente pertenece a una empresa
+        //La cuenta del ponente ya esta creada
         try {
-            const event = await Event.create({
-                ...req.body,
+            const { desc_event, id_place, date, hour, interests, speakerEmail, id_supplier, company } = req.body;
+            if (!speakerEmail) {
+                return res.status(400).send("Complete the speaker email field");
+            }
+
+            let user = await User.findOne({ email: speakerEmail });
+
+            if (!user) {
+                const password = await bcrypt.hash(speakerEmail, 10);
+                user = await User.create({
+                    user_type: "speaker",
+                    password,
+                    email: speakerEmail,
+                    completed: false,
+                    company: company,
+                    id_supplier: id_supplier,
+                });                
+            }
+
+            user.company = company;
+            user.id_supplier = id_supplier;
+            await user.save();
+
+            const place = await Place.findById(id_place);
+            if (!place) {
+                return res.status(404).send("Place not found");
+            }
+            
+            const eventData = {
+                speaker: user._id,
+                desc_event,
+                id_place: place._id,
+                date,
+                hour,
+                interests,
+            };
+
+            if (company !== null && company !== undefined) {
+                eventData.company = company;
+            }
+
+            if (user.id_supplier !== null && user.id_supplier !== undefined) {
+                eventData.id_supplier = id_supplier;
+            }
+            const event = await Event.create(eventData);
+
+            User.findByIdAndUpdate(user._id, { $push: { speaker_events: event._id } }).exec();
+            const emailToken = jwt.sign({ email: speakerEmail }, JWT_SECRET, {
+                expiresIn: "48h",
             });
+            const url = `${EMAILURL}/users/confirm/${emailToken}`;
+            // await transporter.sendMail({
+            //     to: speakerEmail,
+            //     subject: "¡Has sido invitado como ponente!",
+            //     html: `
+            //         <div style="font-family: Arial, sans-serif; color: #333;">
+            //             <h2 style="color: #007BFF;">¡Bienvenido a Nuestro Evento!</h2>
+            //             <p>Hola,</p>
+            //             <p>Nos complace informarte que has sido invitado a participar como ponente en nuestro próximo evento. Estamos emocionados de contar con tu experiencia y conocimientos.</p>
+            //             <p>Para completar tu registro y obtener acceso a la plataforma, por favor confirma tu cuenta haciendo clic en el enlace a continuación:</p>
+            //             <div style="text-align: center; margin: 20px 0;">
+            //                 <a href="${url}" style="display: inline-block; padding: 10px 20px; color: #fff; background-color: #007BFF; border-radius: 5px; text-decoration: none;">Confirmar mi cuenta</a>
+            //             </div>
+            //             <p>Si el botón anterior no funciona, copia y pega el siguiente enlace en tu navegador:</p>
+            //             <p><a href="${url}">${url}</a></p>
+            //             <p>Una vez que hayas confirmado tu cuenta, podrás completar tu perfil y obtener más información sobre el evento.</p>
+            //             <h3 style="color: #007BFF;">Detalles del Evento</h3>
+            //             <ul>
+            //                 <li><strong>Descripción del evento:</strong> ${desc_event}</li>
+            //                 <li><strong>Fecha:</strong> ${date}</li>
+            //                 <li><strong>Hora:</strong> ${hour}</li>
+            //                 <li><strong>Lugar:</strong> ${place.place_name}</li>
+            //             </ul>
+            //             <p>Si tienes alguna pregunta o necesitas asistencia adicional, no dudes en contactarnos.</p>
+            //             <p>Gracias y esperamos verte pronto.</p>
+            //             <p>Saludos,</p>
+            //             <p>El equipo del evento</p>
+            //             <hr style="border: 0; border-top: 1px solid #ccc;">
+            //             <p style="font-size: 12px; color: #777;">Este es un correo electrónico automático, por favor no responda a este mensaje.</p>
+            //         </div>
+            //     `,
+            // });
             res.status(201).send({
-                message:
-                    "Event created successfully",
+                message: "Event created successfully",
                 event,
+                user
             });
 
         } catch (error) {

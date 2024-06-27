@@ -4,11 +4,9 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "Please fill in the name field"],
     },
     surname: {
         type: String,
-        required: [true, "Please fill in the name field"],
     },
     email: {
         type: String,
@@ -20,30 +18,27 @@ const UserSchema = new mongoose.Schema({
         required: [true, "Please fill in the password field"],
     },
     tokens: [],
-    confirmed: { type: Boolean },
+    confirmed: {
+        type: Boolean,
+        default: false,
+    },
     phone_prefx: {
         type: String,
-        required: [true, "Please fill in the phone prefix field"],
     },
     phone_number: {
         type: String,
-        required: [true, "Please fill in the phone number field"],
     },
     address: {
         type: String,
-        required: [true, "Please fill in the address field"],
     },
     zip_code: {
         type: Number,
-        required: [true, "Please fill in the zip code field"],
     },
     city: {
         type: String,
-        required: [true, "Please fill in the city field"],
     },
     country: {
         type: String,
-        required: [true, "Please fill in the country field"],
     },
     user_type: {
         type: String,
@@ -52,15 +47,13 @@ const UserSchema = new mongoose.Schema({
     },
     url_linkedin: {
         type: String,
-        required: [true, "Please fill in the linkedin field"],
     },
     company: {
         type: String,
-        required: [true, "Please fill in the company field"],
     },
-    suplier: {
+    id_supplier: {
         type: ObjectId,
-        ref: 'Suplier'
+        ref: 'Supplier'
     },
     job_title: {
         type: [{
@@ -88,8 +81,6 @@ const UserSchema = new mongoose.Schema({
                 "Director de Innovación",
             ]
         }],
-        required: [true, "Please fill in the job title field"],
-
     },
     allergies: {
         type: [{
@@ -147,10 +138,25 @@ const UserSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'Event'
     },
-    meetingsId: {
+    completed: {
+        type: Boolean,
+        default: true,
+    },
+    speaker_events: {
+        type: [{
+            type: ObjectId,
+            ref: 'Event'
+        }]
+    },
+    ids_meetings: [{
         type: ObjectId,
-        ref: 'Event'
-    }
+        ref: 'Meeting'
+    }],
+    ids_meetings_atendee: [{
+        type: ObjectId,
+        ref: 'Meeting'
+    }],
+    avatar_url:{type:String}
 }, { timestamps: true });
 
 const User = mongoose.model('User', UserSchema);

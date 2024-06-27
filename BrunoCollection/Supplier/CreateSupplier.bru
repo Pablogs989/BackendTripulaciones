@@ -1,0 +1,28 @@
+meta {
+  name: CreateSupplier
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/suppliers/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "cif": "B2352522001",
+    "company_name": "Zoom",
+    "password": "password123",
+    "emails": ["tuki1@example.com", "paquito@example.com","ladrillito@gmail.com"],
+    "address_contact": "Calle Mayor 123",
+    "country": "España",
+    "email": "contacto@miempresa.com",
+    "phone_prefx": "+34",
+    "phone_number": "912345678",
+    "type_collab": "Gold",
+    "interests": ["Marketing Digital"],
+    "employes": 10
+  }
+}
