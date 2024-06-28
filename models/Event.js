@@ -60,7 +60,8 @@ const EventSchema = new mongoose.Schema({
     },
     confirmed:{type:Boolean},
     score_array:{type:[Number]},
-    score_avg:{type:Number}
+    score_avg:{type:Number},
+    avatar_url:{type:String}
 }, { timestamps: true });
 
 EventSchema.methods.toJSON = function () {

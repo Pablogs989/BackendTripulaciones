@@ -13,7 +13,8 @@ const PlaceSchema = new mongoose.Schema({
     events: [{
         type: ObjectId,
         ref: 'Event'
-    }]
+    }],
+    avatar_url:{type:String}
 }, { timestamps: true });
 
 PlaceSchema.methods.toJSON = function () {
