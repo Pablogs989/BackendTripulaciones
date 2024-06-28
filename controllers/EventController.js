@@ -76,6 +76,8 @@ const EventController = {
             const event = await Event.create(eventData);
 
             User.findByIdAndUpdate(user._id, { $push: { speaker_events: event._id } }).exec();
+            place.events.push(event._id)
+            await place.save()
             const emailToken = jwt.sign({ email: speakerEmail }, JWT_SECRET, {
                 expiresIn: "48h",
             });
