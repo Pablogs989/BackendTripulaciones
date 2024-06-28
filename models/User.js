@@ -130,14 +130,14 @@ const UserSchema = new mongoose.Schema({
             enum: [
                 "vegetariano",
                 "vegano",
-                "omnivore"
+                "omnivoro"
             ]
         }],
     },
-    eventsId: {
+    eventsId: [{
         type: ObjectId,
         ref: 'Event'
-    },
+    }],
     completed: {
         type: Boolean,
         default: true,
