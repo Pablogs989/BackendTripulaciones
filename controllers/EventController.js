@@ -196,7 +196,7 @@ const EventController = {
             }
             if (!event.id_users.includes(userId)) {
                 event.id_users.push(userId);
-                user.events.push(event._id);
+                user.push(event._id);
                 await event.save();
             } else {
                 return res.status(400).send({ message: 'User already registered' });
