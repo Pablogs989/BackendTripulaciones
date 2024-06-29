@@ -97,28 +97,8 @@ const UserController = {
             const user = await User.findOne({
                 email: req.body.email,
             })
-            .populate({
-                path: 'ids_meetings',
-                populate: [{
-                    path: 'id_supplier',
-                    model: 'Supplier'
-                },
-                {
-                    path: 'id_user',
-                    model: 'User'
-                }]
-            })
-            .populate({
-                path: 'ids_meetings_atendee',
-                populate: [{
-                    path: 'id_supplier',
-                    model: 'Supplier'
-                },
-                {
-                    path: 'id_user_supplier',
-                    model: 'User'
-                }]
-            })
+            .populate('ids_meetings')
+            .populate('ids_meetings_atendee')
             .populate('speaker_events')
             .populate('id_supplier')
             if (!user) {
@@ -150,29 +130,9 @@ const UserController = {
     },
     async getUserById(req, res) {
         try {
-            const user = await User.findById(req.params.id)
-            .populate({
-                path: 'ids_meetings',
-                populate: [{
-                    path: 'id_supplier',
-                    model: 'Supplier'
-                },
-                {
-                    path: 'id_user',
-                    model: 'User'
-                }]
-            })
-            .populate({
-                path: 'ids_meetings_atendee',
-                populate: [{
-                    path: 'id_supplier',
-                    model: 'Supplier'
-                },
-                {
-                    path: 'id_user_supplier',
-                    model: 'User'
-                }]
-            })
+            const user = await User.findById(req.params._id)
+            .populate('ids_meetings')
+            .populate('ids_meetings_atendee')
             .populate('speaker_events')
             .populate('id_supplier')
             res.send({ message: 'Your user', user })
@@ -201,6 +161,23 @@ const UserController = {
             console.error(error);
             res.status(500).send({
                 message: "There was a problem getting the users",
+            });
+        }
+    },
+    async getUserById(req, res) {
+        try {
+            const user = await User.findById(req.params.id)
+            if (!user) {
+                return res.status(404).send({
+                    message: "User not found",
+                });
+            }
+            res.send(user);
+        }
+        catch (error) {
+            console.error(error);
+            res.status(500).send({
+                message: "There was a problem getting the user",
             });
         }
     },
