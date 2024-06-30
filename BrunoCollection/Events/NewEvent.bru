@@ -1,0 +1,23 @@
+meta {
+  name: NewEvent
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/events/
+  body: json
+  auth: none
+}
+
+body:json {
+  { 
+    "desc_event":"Ponencia test", 
+    "id_place":"667a956bca83db7c1ffa109b",
+    "date":"2024-12-01",
+    "hour":"14:00",
+    "interests":"",
+    "speakerEmail":"",
+    "id_supplier":"667c2333bab4968508194542", 
+    "company":"Zoom" }
+}

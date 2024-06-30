@@ -1,0 +1,19 @@
+meta {
+  name: Score
+  type: http
+  seq: 2
+}
+
+put {
+  url: http://localhost:8080/events/score/667dc99fee773994c75ca843
+  body: json
+  auth: none
+}
+
+headers {
+  authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjdjMjMzNGJhYjQ5Njg1MDgxOTQ1NDYiLCJpYXQiOjE3MTk0OTk0MjJ9.lKmDRGsF2OJwYqNPFN1n7GRAHduwujg8QMlm2nSfbvM
+}
+
+body:json {
+  {"score":5}
+}
