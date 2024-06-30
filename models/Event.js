@@ -58,7 +58,17 @@ const EventSchema = new mongoose.Schema({
         type: ObjectId,
         ref: 'Supplier',
     },
+    confirmed:{type:Boolean},
+    score_array:{type:[Number]},
+    score_avg:{type:Number},
+    avatar_url:{type:String}
 }, { timestamps: true });
+
+EventSchema.methods.toJSON = function () {
+    const user = this._doc;
+    delete user.__v;
+    return user;
+};
 
 const Event = mongoose.model('Event', EventSchema);
 

@@ -1,8 +1,20 @@
 const Place = require("../models/Place.js");
+const { uploadImageToImgur } = require('../config/imgurUploader.js');
+const path = require('path');
 
 const PlaceController = {
     async create(req, res, next) {
         try {
+            if (!req.file) {
+                req.body.avatar_url = false;
+            } else {
+                req.body.avatar_url = req.file.filename;
+                const staticDir = path.join(req.file.destination);
+                const imagePath = path.join(staticDir, req.file.filename);
+                const mainDirPath = path.join(__dirname, '..');
+                req.body.avatar_url = await uploadImageToImgur(mainDirPath +"/"+imagePath) || req.file.filename
+                
+            }
             const place = await Place.create({
                 ...req.body,
             });
@@ -13,7 +25,7 @@ const PlaceController = {
             });
 
         } catch (error) {
-            next(error);
+            res.status(201).send({msg:"error aver estudi'o",error});
         }
     },
     async getAll(req, res, next) {

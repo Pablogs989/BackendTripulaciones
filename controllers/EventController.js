@@ -6,15 +6,30 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET, EMAILURL } = process.env;
 const transporter = require("../config/nodemailer");
+const { uploadImageToImgur } = require('../config/imgurUploader.js');
+const path = require('path');
+
 
 const EventController = {
     async create(req, res, next) {
         //Ponente pertenece a una empresa
         //La cuenta del ponente ya esta creada
         try {
-            const { desc_event, id_place, date, hour, interests, speakerEmail, id_supplier, company } = req.body;
+            if (!req.file) {
+                req.body.avatar_url = false;
+            } else {
+                req.body.avatar_url = req.file.filename;
+                const staticDir = path.join(req.file.destination);
+                const imagePath = path.join(staticDir, req.file.filename);
+                const mainDirPath = path.join(__dirname, '..');
+                req.body.avatar_url = await uploadImageToImgur(mainDirPath +"/"+imagePath) || req.file.filename
+                }
+                
+            const { desc_event, id_place, date, hour, interests, speakerEmail, id_supplier, company,avatar_url } = req.body;
+            let confirmed; 
+            req.user.user_type == "admin" ? confirmed = true :confirmed=false
             if (!speakerEmail) {
-                return res.status(400).send("Complete the speaker email field");
+                return res.status(400).send({msg:"Complete the speaker email field"});
             }
 
             let user = await User.findOne({ email: speakerEmail });
@@ -37,7 +52,7 @@ const EventController = {
 
             const place = await Place.findById(id_place);
             if (!place) {
-                return res.status(404).send("Place not found");
+                return res.status(404).send({msg:"Place not found"});
             }
             
             const eventData = {
@@ -47,6 +62,8 @@ const EventController = {
                 date,
                 hour,
                 interests,
+                confirmed,
+                avatar_url
             };
 
             if (company !== null && company !== undefined) {
@@ -59,6 +76,8 @@ const EventController = {
             const event = await Event.create(eventData);
 
             User.findByIdAndUpdate(user._id, { $push: { speaker_events: event._id } }).exec();
+            place.events.push(event._id)
+            await place.save()
             const emailToken = jwt.sign({ email: speakerEmail }, JWT_SECRET, {
                 expiresIn: "48h",
             });
@@ -101,7 +120,7 @@ const EventController = {
             });
 
         } catch (error) {
-            next(error);
+            res.status(500).send({msg: "there was a problem adding event", error })
         }
     },
     async getAll(req, res, next) {
@@ -177,7 +196,7 @@ const EventController = {
             }
             if (!event.id_users.includes(userId)) {
                 event.id_users.push(userId);
-                user.events.push(event._id);
+                user.push(event._id);
                 await event.save();
             } else {
                 return res.status(400).send({ message: 'User already registered' });
@@ -204,6 +223,18 @@ const EventController = {
             res.status(200).send(event);
         } catch (error) {
             next(error);
+        }
+    },
+    async sccore (req,res){
+        try{
+            
+            const event = await Event.findById(req.params.id)
+            event.score_array.push(req.body.score)
+            event.score_avg= event.score_array.reduce((partialSum, a) => partialSum + a, 0) / event.score_array.length
+            event.save()
+            res.status(200).send({msg: "score added" , event});
+        }catch(error){
+            return res.status(400).send({ message: 'Event not found', error });
         }
     }
 

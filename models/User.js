@@ -130,14 +130,14 @@ const UserSchema = new mongoose.Schema({
             enum: [
                 "vegetariano",
                 "vegano",
-                "omnivore"
+                "omnivoro"
             ]
         }],
     },
-    eventsId: {
+    eventsId: [{
         type: ObjectId,
         ref: 'Event'
-    },
+    }],
     completed: {
         type: Boolean,
         default: true,
@@ -155,9 +155,17 @@ const UserSchema = new mongoose.Schema({
     ids_meetings_atendee: [{
         type: ObjectId,
         ref: 'Meeting'
-    }]
+    }],
+    avatar_url:{type:String}
 }, { timestamps: true });
 
+UserSchema.methods.toJSON = function () {
+    const user = this._doc;
+	delete user.tokens;
+	delete user.password;
+	delete user.__v;
+	return user;
+    };
 const User = mongoose.model('User', UserSchema);
 
 module.exports = User;
