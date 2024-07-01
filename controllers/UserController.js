@@ -177,7 +177,10 @@ const UserController = {
             .populate('id_supplier')
             res.send({ message: 'Your user', user })
         } catch (error) {
-            next(error);
+            console.error(error);
+            res.status(500).send({
+                message: "There was a problem getting out the user",
+            });
         }
     },
     async logout(req, res) {
