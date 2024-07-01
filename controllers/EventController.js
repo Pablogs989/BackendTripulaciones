@@ -6,28 +6,15 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET, EMAILURL } = process.env;
 const transporter = require("../config/nodemailer");
-const { uploadImageToImgur } = require('../config/imgurUploader.js');
-const path = require('path');
-
 
 const EventController = {
     async create(req, res, next) {
         //Ponente pertenece a una empresa
         //La cuenta del ponente ya esta creada
         try {
-            if (!req.file) {
-                req.body.avatar_url = false;
-            } else {
-                req.body.avatar_url = req.file.filename;
-                const staticDir = path.join(req.file.destination);
-                const imagePath = path.join(staticDir, req.file.filename);
-                const mainDirPath = path.join(__dirname, '..');
-                req.body.avatar_url = await uploadImageToImgur(mainDirPath +"/"+imagePath) || req.file.filename
-                }
-                
-            const { desc_event, id_place, date, hour, interests, speakerEmail, id_supplier, company,avatar_url } = req.body;
+            const { desc_event, id_place, date, hour, interests, speakerEmail, id_supplier, company } = req.body;
             let confirmed; 
-            req.user.user_type == "admin" ? confirmed = true :confirmed=false
+            req.user.user_type == "admin" ? confirmed = true :confirmed=false 
             if (!speakerEmail) {
                 return res.status(400).send({msg:"Complete the speaker email field"});
             }
@@ -62,8 +49,7 @@ const EventController = {
                 date,
                 hour,
                 interests,
-                confirmed,
-                avatar_url
+                confirmed
             };
 
             if (company !== null && company !== undefined) {
@@ -76,8 +62,6 @@ const EventController = {
             const event = await Event.create(eventData);
 
             User.findByIdAndUpdate(user._id, { $push: { speaker_events: event._id } }).exec();
-            place.events.push(event._id)
-            await place.save()
             const emailToken = jwt.sign({ email: speakerEmail }, JWT_SECRET, {
                 expiresIn: "48h",
             });
@@ -120,7 +104,7 @@ const EventController = {
             });
 
         } catch (error) {
-            res.status(500).send({msg: "there was a problem adding event", error })
+            next(error);
         }
     },
     async getAll(req, res, next) {
@@ -196,12 +180,13 @@ const EventController = {
             }
             if (!event.id_users.includes(userId)) {
                 event.id_users.push(userId);
-                user.push(event._id);
+                user.eventsId.push(event._id);
                 await event.save();
+                await user.save();
             } else {
                 return res.status(400).send({ message: 'User already registered' });
             }
-            res.status(200).send(event);
+            res.status(200).send({msg:"user added to event",event,user});
         } catch (error) {
             next(error);
         }
