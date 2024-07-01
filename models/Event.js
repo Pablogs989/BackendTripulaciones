@@ -17,7 +17,7 @@ const EventSchema = new mongoose.Schema({
         required: [true, "Please fill in the password field"],
     },
     date: {
-        type: String,
+        type: Date,
         required: [true, "Please fill in the password field"],
     },
     hour: {
