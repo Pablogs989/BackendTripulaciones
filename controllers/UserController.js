@@ -174,12 +174,6 @@ const UserController = {
     },
     async getUserById(req, res) {
         try {
-<<<<<<< HEAD
-            const user = await User.findById(req.params._id)
-            .populate('ids_meetings')
-            .populate('ids_meetings_atendee')
-            .populate('speaker_events')
-=======
             const user = await User.findById(req.params.id)
             .populate({
                 path: 'ids_meetings',
@@ -210,7 +204,6 @@ const UserController = {
                     model: 'Place'
                 }
             })
->>>>>>> develop
             .populate('id_supplier')
             .populate({
                 path: 'eventsId',
