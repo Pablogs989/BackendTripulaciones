@@ -254,23 +254,6 @@ const UserController = {
             });
         }
     },
-    async getUserById(req, res) {
-        try {
-            const user = await User.findById(req.params.id)
-            if (!user) {
-                return res.status(404).send({
-                    message: "User not found",
-                });
-            }
-            res.send(user);
-        }
-        catch (error) {
-            console.error(error);
-            res.status(500).send({
-                message: "There was a problem getting the user",
-            });
-        }
-    },
     async updateUser(req, res) {
         try {
             if (req.file) {
