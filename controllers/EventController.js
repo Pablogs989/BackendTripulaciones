@@ -196,16 +196,22 @@ const EventController = {
         const userId = req.user.id;
         try {
             const event = await Event.findById(id);
+            const user = await User.findById(userId);
             if (!event) {
                 return res.status(404).send({ message: 'Event not found' });
             }
             if (event.id_users.includes(userId)) {
                 event.id_users = event.id_users.filter((id) => id != userId);
+                user.eventsId = user.eventsId.filter((id)=>id !=req.params.id)
                 await event.save();
+                await user.save();
             } else {
                 return res.status(400).send({ message: 'User not registered' });
             }
-            res.status(200).send(event);
+            res.status(200).send({msg:"User "+user.name+" out of event : "+event.desc_event , 
+                                  event,
+                                  user
+                                });
         } catch (error) {
             next(error);
         }
@@ -221,7 +227,31 @@ const EventController = {
         }catch(error){
             return res.status(400).send({ message: 'Event not found', error });
         }
-    }
+    },
+    async deleteEvent(req, res, next) {
+        const { id } = req.params;
+        const userId = req.user.id;
+        try {
+            let event = await Event.findById(id);
+            const user = await User.findById(userId);
+            if (!event) {
+                return res.status(404).send({ message: 'Event not found' });
+                }
+            if (event.speaker == userId ) {
+            user.speaker_events = user.speaker_events.filter((id)=> id !=event._id)
+            await user.save();
+            event = await Event.findByIdAndDelete(event._id)
+            } else {
+                return res.status(400).send({ message: "You aren't allowed to delete this event" });
+            }
+            res.status(200).send({msg:"User "+user.name+" deleted event : "+event.desc_event , 
+                                  event,
+                                  user
+                                });
+        } catch (error) {
+            res.status(500).send({msg:"There was some problem removing the event : ",error});
+        }
+    },
 
 };
 
