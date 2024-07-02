@@ -119,8 +119,31 @@ const UserController = {
                     model: 'User'
                 }]
             })
-            .populate('speaker_events')
+            .populate({
+                path: 'speaker_events',
+                populate: {
+                    path: 'id_place',
+                    model: 'Place'
+                }
+            })
             .populate('id_supplier')
+            .populate({
+                path: 'eventsId',
+                populate: [{
+                    path: 'id_supplier',
+                    model: 'Supplier'
+                },
+                {
+                    path: 'speaker',
+                    model: 'User'
+                },
+                {
+                    path: 'id_place',
+                    model: 'Place'
+                },
+                ]
+            })
+
             if (!user) {
                 return res.status(400).send("Invalid email or password");
             }
@@ -174,8 +197,31 @@ const UserController = {
                     model: 'User'
                 }]
             })
-            .populate('speaker_events')
+            .populate({
+                path: 'speaker_events',
+                populate: {
+                    path: 'id_place',
+                    model: 'Place'
+                }
+            })
             .populate('id_supplier')
+            .populate({
+                path: 'eventsId',
+                populate: [{
+                    path: 'id_supplier',
+                    model: 'Supplier'
+                },
+                {
+                    path: 'speaker',
+                    model: 'User'
+                },
+                {
+                    path: 'id_place',
+                    model: 'Place'
+                },
+                ]
+            })
+
             res.send({ message: 'Your user', user })
         } catch (error) {
             console.error(error);
