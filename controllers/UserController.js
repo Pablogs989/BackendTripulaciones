@@ -263,7 +263,9 @@ const UserController = {
                 const mainDirPath = path.join(__dirname, '..');
                 req.body.avatar_url = await uploadImageToImgur(mainDirPath +"/"+imagePath) || req.file.filename
             }
-            const user = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
+            const password = await bcrypt.hash(req.body.password, 10);
+            const completed = req.user.completed = true;
+            const user = await User.findByIdAndUpdate(req.user._id, {...req.body, password, completed}, { new: true });
             res.send(user);
         }
         catch (error) {
