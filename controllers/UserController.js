@@ -97,10 +97,53 @@ const UserController = {
             const user = await User.findOne({
                 email: req.body.email,
             })
-            .populate('ids_meetings')
-            .populate('ids_meetings_atendee')
-            .populate('speaker_events')
+            .populate({
+                path: 'ids_meetings',
+                populate: [{
+                    path: 'id_supplier',
+                    model: 'Supplier'
+                },
+                {
+                    path: 'id_user',
+                    model: 'User'
+                }]
+            })
+            .populate({
+                path: 'ids_meetings_atendee',
+                populate: [{
+                    path: 'id_supplier',
+                    model: 'Supplier'
+                },
+                {
+                    path: 'id_user_supplier',
+                    model: 'User'
+                }]
+            })
+            .populate({
+                path: 'speaker_events',
+                populate: {
+                    path: 'id_place',
+                    model: 'Place'
+                }
+            })
             .populate('id_supplier')
+            .populate({
+                path: 'eventsId',
+                populate: [{
+                    path: 'id_supplier',
+                    model: 'Supplier'
+                },
+                {
+                    path: 'speaker',
+                    model: 'User'
+                },
+                {
+                    path: 'id_place',
+                    model: 'Place'
+                },
+                ]
+            })
+
             if (!user) {
                 return res.status(400).send("Invalid email or password");
             }
@@ -108,6 +151,7 @@ const UserController = {
                 !req.body.password ||
                 !bcrypt.compareSync(req.body.password, user.password)
             ) {
+                console.log('holaaa : ', req.body.password + " | "+user.password +" | "+bcrypt.compareSync(req.body.password, user.password) )
                 return res.status(400).send("Invalid email or password");
             }
             if (!user.confirmed) {
@@ -130,11 +174,61 @@ const UserController = {
     },
     async getUserById(req, res) {
         try {
+<<<<<<< HEAD
             const user = await User.findById(req.params._id)
             .populate('ids_meetings')
             .populate('ids_meetings_atendee')
             .populate('speaker_events')
+=======
+            const user = await User.findById(req.params.id)
+            .populate({
+                path: 'ids_meetings',
+                populate: [{
+                    path: 'id_supplier',
+                    model: 'Supplier'
+                },
+                {
+                    path: 'id_user',
+                    model: 'User'
+                }]
+            })
+            .populate({
+                path: 'ids_meetings_atendee',
+                populate: [{
+                    path: 'id_supplier',
+                    model: 'Supplier'
+                },
+                {
+                    path: 'id_user_supplier',
+                    model: 'User'
+                }]
+            })
+            .populate({
+                path: 'speaker_events',
+                populate: {
+                    path: 'id_place',
+                    model: 'Place'
+                }
+            })
+>>>>>>> develop
             .populate('id_supplier')
+            .populate({
+                path: 'eventsId',
+                populate: [{
+                    path: 'id_supplier',
+                    model: 'Supplier'
+                },
+                {
+                    path: 'speaker',
+                    model: 'User'
+                },
+                {
+                    path: 'id_place',
+                    model: 'Place'
+                },
+                ]
+            })
+
             res.send({ message: 'Your user', user })
         } catch (error) {
             console.error(error);
@@ -193,7 +287,9 @@ const UserController = {
                 const mainDirPath = path.join(__dirname, '..');
                 req.body.avatar_url = await uploadImageToImgur(mainDirPath +"/"+imagePath) || req.file.filename
             }
-            const user = await User.findByIdAndUpdate(req.user._id, req.body, { new: true });
+            const password = await bcrypt.hash(req.body.password, 10);
+            const completed = req.user.completed = true;
+            const user = await User.findByIdAndUpdate(req.user._id, {...req.body, password, completed}, { new: true });
             res.send(user);
         }
         catch (error) {
