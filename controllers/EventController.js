@@ -109,7 +109,9 @@ const EventController = {
     },
     async getAll(req, res, next) {
         try {
-            const events = await Event.find();
+            const events = await Event.find()
+            .populate('id_place')
+            .populate('speaker');
             res.status(200).send(events);
         } catch (error) {
             next(error);
