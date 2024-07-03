@@ -246,7 +246,30 @@ const UserController = {
     async getUsers(req, res) {
         try {
             const users = await User.find()
-            res.send(users);
+            .populate({
+                path: 'ids_meetings',
+                populate: [{
+                    path: 'id_supplier',
+                    model: 'Supplier'
+                },
+                {
+                    path: 'id_user',
+                    model: 'User'
+                }]
+            })
+            .populate({
+                path: 'ids_meetings_atendee',
+                populate: [{
+                    path: 'id_supplier',
+                    model: 'Supplier'
+                },
+                {
+                    path: 'id_user_supplier',
+                    model: 'User'
+                }]
+            });
+
+        res.send(users);
         } catch (error) {
             console.error(error);
             res.status(500).send({
