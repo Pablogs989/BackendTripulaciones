@@ -88,9 +88,10 @@ Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo `LICENS
 Para obtener más detalles sobre la API y su uso, revisa la documentación completa o contacta al equipo de desarrollo.
 
 ## Autores
- [Pablo](https://github.com/Pablogs989)
- [Jairo](https://github.com/jaironf)
- [Bruno](https://github.com/BrunoMalfi)
- [Manuel](https://github.com/manudana11)
- [Agustin](https://github.com/AgustinErimbaue)
+
+- **[Pablo](https://github.com/Pablogs989)**
+- **[Jairo](https://github.com/jaironf)**
+- **[Bruno](https://github.com/BrunoMalfi)**
+- **[Manuel](https://github.com/manudana11)**
+- **[Agustin](https://github.com/AgustinErimbaue)**
 
