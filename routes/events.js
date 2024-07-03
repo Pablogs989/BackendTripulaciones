@@ -13,6 +13,7 @@ router.put('/cancel/id/:id', authentication, isAdmin, EventController.cancelEven
 router.get('/getbydate', EventController.getEventByDate)
 router.put('/adduser/id/:id', authentication, EventController.addUser)
 router.put('/removeuser/id/:id', authentication, EventController.removeUser)
+router.delete('/deleteevent/id/:id', authentication, EventController.deleteEvent)
 router.put('/score/:id',authentication,EventController.sccore)
 
 module.exports = router
