@@ -6,7 +6,7 @@ const {imageLoad} =require('../middleware/multer.js')
 
 router.post('/', authentication, imageLoad,EventController.create)
 router.get('/', EventController.getAll)
-router.put('/id/:id', authentication, isAdmin, EventController.update)
+router.put('/id/:id', authentication, EventController.update)
 router.delete('/id/:id', authentication, isAdmin, EventController.delete)
 router.get('/id/:id', EventController.getEventById)
 router.put('/cancel/id/:id', authentication, isAdmin, EventController.cancelEvent)
