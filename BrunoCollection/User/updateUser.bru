@@ -1,0 +1,21 @@
+meta {
+  name: updateUser
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:8080/users/id/6695572e18ee8e29efa0cd70
+  body: json
+  auth: none
+}
+
+headers {
+  authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2Njk1NTcyZTE4ZWU4ZTI5ZWZhMGNkNzAiLCJpYXQiOjE3MjEwNjM0Nzd9.xMSesm7WdjXhgc6iKkorhmyYBi3stShwpYCa5COsvXM
+}
+
+body:json {
+  {
+    "password":"Zoom0"
+  }
+}
